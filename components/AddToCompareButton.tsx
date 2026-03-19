@@ -1,6 +1,9 @@
 'use client'
 
 import { useComparison, ComparisonBike } from '@/context/ComparisonContext'
+import { getDictionary } from '@/lib/dictionaries'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 interface AddToCompareButtonProps {
     bike: ComparisonBike
@@ -11,6 +14,23 @@ interface AddToCompareButtonProps {
 export default function AddToCompareButton({ bike, variant = 'button', className = '' }: AddToCompareButtonProps) {
     const { addToCompare, removeFromCompare, isInCompare, selectedBikes } = useComparison()
     const isSelected = isInCompare(bike.id)
+    const params = useParams()
+    const lang = (params?.lang as string) || 'en'
+    const [labels, setLabels] = useState({
+        addToCompare: 'Add to Compare',
+        removeFromCompare: 'Remove from Compare',
+        added: 'Added',
+    })
+
+    useEffect(() => {
+        getDictionary(lang).then((dict) => {
+            setLabels({
+                addToCompare: dict.common?.add_to_compare || 'Add to Compare',
+                removeFromCompare: dict.common?.remove_from_compare || 'Remove from Compare',
+                added: dict.common?.added || 'Added',
+            })
+        })
+    }, [lang])
 
     const handleToggle = (e: React.MouseEvent) => {
         e.preventDefault() // Prevent navigation if used inside a Link
@@ -29,7 +49,7 @@ export default function AddToCompareButton({ bike, variant = 'button', className
                 onClick={handleToggle}
                 className={`p-2 rounded-full transition-colors ${isSelected ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600'
                     } ${className}`}
-                title={isSelected ? 'Remove from comparison' : 'Add to compare'}
+                title={isSelected ? labels.removeFromCompare : labels.addToCompare}
             >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
@@ -50,7 +70,7 @@ export default function AddToCompareButton({ bike, variant = 'button', className
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
                 </svg>
-                {isSelected ? 'Remove from Compare' : 'Add to Compare'}
+                {isSelected ? labels.removeFromCompare : labels.addToCompare}
             </button>
         )
     }
@@ -64,7 +84,7 @@ export default function AddToCompareButton({ bike, variant = 'button', className
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
             </svg>
-            {isSelected ? 'Added' : 'Add to Compare'}
+            {isSelected ? labels.added : labels.addToCompare}
         </button>
     )
 }

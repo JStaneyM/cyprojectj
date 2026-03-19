@@ -10,58 +10,31 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // User requested strict "side-by-side" matching.
-    // We treat the query as a single phrase/substring.
-    // We normalize multiple spaces to single space to be slightly forgiving, but keep sequence.
-    // Split query into individual terms for "all words match" logic
     const terms = query.trim().split(/\s+/).filter(t => t.length > 0)
+    const minimumMatches = terms.length > 3 ? 3 : terms.length
+    const seedTerm = [...terms]
+      .sort((a, b) => b.replace(/[^a-z0-9]/gi, '').length - a.replace(/[^a-z0-9]/gi, '').length)[0]
+    const seedPattern = `%${seedTerm}%`
 
-    const sort = searchParams.get('sort') || 'year'
-    let orderColumn = 'year'
-    let ascending = false
+    const { data: bikes, error: searchError } = await supabaseServer
+      .from('bike_listings')
+      .select('id, brand, model, title, year, price, slug, category, sub_category, primary_image')
+      .ilike('title', seedPattern)
+      .order('year', { ascending: false })
+      .limit(120)
 
-    switch (sort) {
-      case 'value':
-        orderColumn = 'vfm_score_1_to_10'
-        break
-      case 'performance':
-        orderColumn = 'performance_score'
-        break
-      case 'comfort':
-        orderColumn = 'ride_comfort_1_10'
-        break
-      case 'position':
-        orderColumn = 'posture_1_10'
-        break
-      default:
-        orderColumn = 'year'
+    if (searchError) {
+      console.error('Search error:', searchError)
+      return NextResponse.json({ bikes: [], total: 0, error: searchError.message }, { status: 500 })
     }
 
-    let queryBuilder = supabaseServer
-      .from('bikes')
-      .select('*', { count: 'exact' })
-
-    // For each term, it must appear in AT LEAST ONE of the target columns.
-    // Chaining .or() filters creates an AND relationship between the groups in Supabase/PostgREST.
-    // So (field1 matches term1 OR field2 matches term1) AND (field1 matches term2 OR field2 matches term2)...
-    terms.forEach(term => {
-      // Removing title.ilike because database has misaligned titles
-      const orClause = `brand.ilike.%${term}%,model.ilike.%${term}%,sub_category.ilike.%${term}%,category.ilike.%${term}%,slug.ilike.%${term}%`
-      queryBuilder = queryBuilder.or(orClause)
+    const filteredBikes = (bikes || []).filter((bike) => {
+      const searchableText = (bike.title || '').toLowerCase()
+      const matchCount = terms.reduce((count, term) => count + (searchableText.includes(term.toLowerCase()) ? 1 : 0), 0)
+      return matchCount >= minimumMatches
     })
 
-    // Apply sorting
-    // We add nullsLast behavior for scores to ensure bikes with actual scores float to top
-    const { data: bikes, error, count } = await queryBuilder
-      .order(orderColumn, { ascending: ascending, nullsFirst: false })
-      .limit(50)
-
-    if (error) {
-      console.error('Search error:', error)
-      return NextResponse.json({ bikes: [], total: 0, error: error.message }, { status: 500 })
-    }
-
-    return NextResponse.json({ bikes: bikes || [], total: count || 0 })
+    return NextResponse.json({ bikes: filteredBikes, total: filteredBikes.length })
   } catch (error) {
     console.error('Search error:', error)
     return NextResponse.json({ bikes: [], total: 0, error: 'Internal server error' }, { status: 500 })

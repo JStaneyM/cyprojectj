@@ -32,7 +32,7 @@ export default async function SubCategoryBrandPage({ params }: PageProps) {
 
     const { data: bikes, count } = await supabaseServer
         .from('bikes')
-        .select('id, brand, model, year, price, slug, category, sub_category, images, vfm_score_1_to_10, build_1_10, speed_index, frame, performance_score, value_score, ride_comfort_1_10, posture_1_10', { count: 'exact' })
+        .select('id, brand, model, year, price, slug, category, sub_category, images, vfm_score_1_to_10, build_1_10, speed_index, frame, overall_score, performance_score, value_score, ride_comfort_1_10, posture_1_10', { count: 'exact' })
         .ilike('sub_category', `%${subCategoryName}%`)
         .ilike('category', `%${categorySlug}%`)
         .ilike('brand', `%${brandName}%`)

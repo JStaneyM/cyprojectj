@@ -36,27 +36,48 @@ export function getMetadataAlternates(pathSuffix: string, currentLang: string) {
  * Calculate bike metrics from raw data
  */
 export function calculateBikeMetrics(bike: Bike): BikeMetrics {
-  // Use pre-calculated scores from CSV if available, otherwise calculate
-  // Performance Score (use column if available, else calculate from climbing and aerodynamics)
-  const climbScore = bike.climb_1_10 || 5
-  const aeroScore = bike.aero_1_10 || 5
-  const performanceScore = bike.performance_score ?? Math.round(((climbScore + aeroScore) / 2) * 10) / 10
+  const normalizeScore = (value: number | null | undefined): number | null => {
+    if (value === null || value === undefined) return null
+    return value / 10
+  }
 
-  // Value Score (use column if available, else use vfm_score_1_to_10)
-  const valueScore = bike.value_score ?? bike.vfm_score_1_to_10 ?? 5
+  const normalizeAggregateScore = (value: number | null | undefined): number | null => {
+    if (value === null || value === undefined) return null
+    return value / 10
+  }
 
-  // Fit Score (use column if available, else calculate from fit flexibility and posture)
-  const fitFlexScore = bike.fit_flexibility_1_10 || 5
-  const postureScore = bike.posture_1_10 || 5
-  const fitScore = bike.fit_score ?? Math.round(((fitFlexScore + postureScore) / 2) * 10) / 10
+  const climbScore = normalizeScore(bike.climb_1_10)
+  const aeroScore = normalizeScore(bike.aero_1_10)
+  const valueScore = normalizeAggregateScore(bike.value_score) ?? normalizeScore(bike.vfm_score_1_to_10)
+  const fitFlexScore = normalizeScore(bike.fit_flexibility_1_10)
+  const postureScore = normalizeScore(bike.posture_1_10)
+  const buildScore = normalizeScore(bike.build_1_10)
+  const comfortScore = normalizeScore(bike.ride_comfort_1_10)
+  const speedScore = normalizeScore(bike.speed_index)
+  const handlingScore = normalizeScore(bike.responsiveness_1_10)
 
-  // General Score (use column if available, else calculate from build quality and ride comfort)
-  const buildScore = bike.build_1_10 || 5
-  const comfortScore = bike.ride_comfort_1_10 || 5
-  const generalScore = bike.general_score ?? Math.round(((buildScore + comfortScore) / 2) * 10) / 10
+  // Preserve explicit aggregate scores from the dataset; only calculate fallbacks where the UI still expects them.
+  const performanceScore = normalizeAggregateScore(bike.performance_score) ?? (
+    climbScore !== null && aeroScore !== null
+      ? Math.round(((climbScore + aeroScore) / 2) * 10) / 10
+      : 0
+  )
+  const fitScore = normalizeAggregateScore(bike.fit_score) ?? (
+    fitFlexScore !== null && postureScore !== null
+      ? Math.round(((fitFlexScore + postureScore) / 2) * 10) / 10
+      : 0
+  )
+  const generalScore = normalizeAggregateScore(bike.general_score)
 
-  // Overall Score (use column if available, else calculate average)
-  const overallScore = bike.overall_score ?? Math.round(((performanceScore + valueScore + fitScore + generalScore) / 4) * 10) / 10
+  // Overall Score (use column if available, else average the aggregate scores that actually exist)
+  const summaryScores = [performanceScore, valueScore, fitScore, generalScore].filter(
+    (score): score is number => score !== null && score !== undefined
+  )
+  const overallScore = normalizeAggregateScore(bike.overall_score) ?? (
+    summaryScores.length > 0
+      ? Math.round((summaryScores.reduce((sum, score) => sum + score, 0) / summaryScores.length) * 10) / 10
+      : 0
+  )
 
   // Get descriptive labels
   const getPerformanceLabel = (score: number): string => {
@@ -123,8 +144,6 @@ export function calculateBikeMetrics(bike: Bike): BikeMetrics {
     return 'buckets.speed.relaxed_pace'
   }
 
-  const speedScore = bike.speed_index || 5
-
   const getSuspensionLabel = (score: number): string => {
     if (score >= 8) return 'buckets.suspension.plush'
     if (score >= 6) return 'buckets.suspension.balanced'
@@ -151,7 +170,7 @@ export function calculateBikeMetrics(bike: Bike): BikeMetrics {
     (bike.battery && bike.battery.length > 0)
 
   // Suspension logic
-  const suspensionScore = bike.suspension_1_10 || 5
+  const suspensionScore = normalizeScore(bike.suspension_1_10) ?? 0
   // Determine if we should show suspension (mainly for MTB) - handled in UI, but we calculate it here.
 
   return {
@@ -176,63 +195,63 @@ export function calculateBikeMetrics(bike: Bike): BikeMetrics {
     },
     general: {
       label: 'scores.general',
-      score: generalScore,
+      score: generalScore ?? 0,
       maxScore: 10,
-      description: getBuildLabel(generalScore),
+      description: getBuildLabel(generalScore ?? 0),
     },
     speed: {
       label: 'scores.speed',
-      score: speedScore,
+      score: speedScore ?? 0,
       maxScore: 10,
-      description: getSpeedLabel(speedScore),
+      description: bike.speed_bucket || getSpeedLabel(speedScore ?? 0),
     },
     climbingEfficiency: {
       label: 'scores.climbing',
-      score: climbScore,
+      score: climbScore ?? 0,
       maxScore: 10,
-      description: getPerformanceLabel(climbScore),
+      description: getPerformanceLabel(climbScore ?? 0),
     },
     aerodynamics: {
       label: 'scores.aerodynamics',
-      score: aeroScore,
+      score: aeroScore ?? 0,
       maxScore: 10,
-      description: getAeroLabel(aeroScore),
+      description: bike.aero_bucket || getAeroLabel(aeroScore ?? 0),
     },
     ridingPosition: {
       label: 'scores.riding_position',
-      score: postureScore,
+      score: postureScore ?? 0,
       maxScore: 10,
-      description: getPostureLabel(postureScore),
+      description: bike.posture_bucket || getPostureLabel(postureScore ?? 0),
     },
     handling: {
       label: 'scores.handling',
-      score: bike.responsiveness_1_10 || 5,
+      score: handlingScore ?? 0,
       maxScore: 10,
-      description: getResponsivenessLabel(bike.responsiveness_1_10 || 5),
+      description: getResponsivenessLabel(handlingScore ?? 0),
     },
     fitFlexibility: {
       label: 'scores.fit_flexibility',
-      score: fitFlexScore,
+      score: fitFlexScore ?? 0,
       maxScore: 10,
-      description: getFitLabel(fitFlexScore),
+      description: bike.fit_flexibility_bucket || getFitLabel(fitFlexScore ?? 0),
     },
     rideComfort: {
       label: 'scores.ride_comfort',
-      score: comfortScore,
+      score: comfortScore ?? 0,
       maxScore: 10,
-      description: getComfortLabel(comfortScore),
+      description: bike.ride_comfort_bucket || getComfortLabel(comfortScore ?? 0),
     },
     buildQuality: {
       label: 'scores.build_quality',
-      score: buildScore,
+      score: buildScore ?? 0,
       maxScore: 10,
-      description: getBuildLabel(buildScore),
+      description: getBuildLabel(buildScore ?? 0),
     },
     valueForMoney: {
       label: 'scores.value_for_money',
-      score: valueScore,
+      score: valueScore ?? 0,
       maxScore: 10,
-      description: getValueLabel(valueScore),
+      description: bike.vfm_score_bucket || getValueLabel(valueScore ?? 0),
     },
     surfaceRange: {
       label: 'scores.surface_range',

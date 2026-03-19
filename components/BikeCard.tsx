@@ -12,11 +12,13 @@ interface Bike {
   slug: string
   category: string
   sub_category: string | null
-  images: string[] | null
+  images?: string[] | null
+  primary_image?: string | null
   vfm_score_1_to_10: number | null
   build_1_10: number | null
   speed_index: number | null
-  performance_score: number | null
+  overall_score?: number | null
+  performance_score?: number | null
 }
 
 interface BikeCardProps {
@@ -26,12 +28,16 @@ interface BikeCardProps {
 }
 
 export default function BikeCard({ bike, categorySlug, lang }: BikeCardProps) {
-  const imageUrl = bike.images && bike.images.length > 0 ? bike.images[0] : null
-  // Calculate Overall Score: (Value + Performance) / 2
-  // Prefer performance_score, fallback to build_1_10 (legacy)
-  const performance = bike.performance_score || bike.build_1_10 || 5
-  const value = bike.vfm_score_1_to_10 || 5
-  const overallScore = (value + performance) / 2
+  const imageUrl = bike.primary_image || (bike.images && bike.images.length > 0 ? bike.images[0] : null)
+  const overallScore = bike.overall_score !== null && bike.overall_score !== undefined
+    ? bike.overall_score / 10
+    : null
+  const valueScore = bike.vfm_score_1_to_10 !== null && bike.vfm_score_1_to_10 !== undefined
+    ? bike.vfm_score_1_to_10 / 10
+    : null
+  const performanceScore = bike.performance_score !== null && bike.performance_score !== undefined
+    ? bike.performance_score / 10
+    : null
 
   const formatPrice = (price: number | null) => {
     if (!price) return 'Price not available'
@@ -85,9 +91,11 @@ export default function BikeCard({ bike, categorySlug, lang }: BikeCardProps) {
           )}
 
           {/* Overall Score Badge */}
-          <div className="absolute top-2 right-2 bg-white rounded-full px-3 py-1 shadow-md z-10">
-            <span className="text-sm font-bold text-gray-900">{overallScore.toFixed(1)}</span>
-          </div>
+          {overallScore !== null && overallScore !== undefined && (
+            <div className="absolute top-2 right-2 bg-white rounded-full px-3 py-1 shadow-md z-10">
+              <span className="text-sm font-bold text-gray-900">{overallScore.toFixed(1)}</span>
+            </div>
+          )}
         </div>
 
         {/* Content */}
@@ -103,16 +111,16 @@ export default function BikeCard({ bike, categorySlug, lang }: BikeCardProps) {
 
           {/* Scores */}
           <div className="flex items-center gap-3 mb-3 text-xs mt-auto">
-            {bike.vfm_score_1_to_10 && (
+            {valueScore !== null && (
               <div className="flex items-center gap-1">
                 <span className="text-gray-500">Value:</span>
-                <span className="font-semibold text-gray-900">{bike.vfm_score_1_to_10.toFixed(1)}</span>
+                <span className="font-semibold text-gray-900">{valueScore.toFixed(1)}</span>
               </div>
             )}
-            {bike.performance_score && (
+            {performanceScore !== null && (
               <div className="flex items-center gap-1">
                 <span className="text-gray-500">Performance:</span>
-                <span className="font-semibold text-gray-900">{bike.performance_score.toFixed(1)}</span>
+                <span className="font-semibold text-gray-900">{performanceScore.toFixed(1)}</span>
               </div>
             )}
           </div>

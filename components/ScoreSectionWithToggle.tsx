@@ -1,16 +1,34 @@
 'use client'
 
-import { useState, ReactNode, Children, cloneElement, isValidElement } from 'react'
+import { useState, ReactNode, Children, cloneElement, isValidElement, useEffect } from 'react'
+import { getDictionary } from '@/lib/dictionaries'
+import { useParams } from 'next/navigation'
 
 interface ScoreSectionWithToggleProps {
   title: string
   subtitle?: string
   children: ReactNode
   gridCols?: string
+  containerClassName?: string
 }
 
-export default function ScoreSectionWithToggle({ title, subtitle, children, gridCols = 'grid-cols-3' }: ScoreSectionWithToggleProps) {
+export default function ScoreSectionWithToggle({ title, subtitle, children, gridCols = 'grid-cols-3', containerClassName = '' }: ScoreSectionWithToggleProps) {
   const [showAllExplanations, setShowAllExplanations] = useState(false)
+  const [labels, setLabels] = useState({
+    showExplanations: 'Show Explanations',
+    hideExplanations: 'Hide Explanations',
+  })
+  const params = useParams()
+  const lang = (params?.lang as string) || 'en'
+
+  useEffect(() => {
+    getDictionary(lang).then((dict) => {
+      setLabels({
+        showExplanations: dict.common?.show_explanations || 'Show Explanations',
+        hideExplanations: dict.common?.hide_explanations || 'Hide Explanations',
+      })
+    })
+  }, [lang])
 
   // Clone children and pass expanded state to ScoreCard components
   const clonedChildren = Children.map(children, (child) => {
@@ -39,19 +57,19 @@ export default function ScoreSectionWithToggle({ title, subtitle, children, grid
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
               </svg>
-              Hide Explanations
+              {labels.hideExplanations}
             </>
           ) : (
             <>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
-              Show Explanations
+              {labels.showExplanations}
             </>
           )}
         </button>
       </div>
-      <div className={`grid ${gridCols} gap-4`}>
+      <div className={`${containerClassName} grid ${gridCols} gap-4`}>
         {clonedChildren}
       </div>
     </div>

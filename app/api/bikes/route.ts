@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     // Build query
     let query = supabaseServer
       .from('bikes')
-      .select('id, brand, model, year, price, slug, category, sub_category, images, vfm_score_1_to_10, build_1_10, speed_index, performance_score, value_score, ride_comfort_1_10, posture_1_10', { count: 'exact' })
+      .select('id, brand, model, year, price, slug, category, sub_category, images, vfm_score_1_to_10, build_1_10, speed_index, overall_score, performance_score, value_score, ride_comfort_1_10, posture_1_10', { count: 'exact' })
 
     // Add category filter if provided
     if (categoryName) {

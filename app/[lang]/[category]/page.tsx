@@ -54,7 +54,7 @@ async function getInitialBikes(slug: string) {
 
   const { data: categoryData, count: categoryCount } = await supabaseServer
     .from('bikes')
-    .select('id, brand, model, year, price, slug, category, sub_category, images, vfm_score_1_to_10, build_1_10, speed_index, frame, performance_score, value_score, ride_comfort_1_10, posture_1_10', { count: 'exact' })
+    .select('id, brand, model, year, price, slug, category, sub_category, images, vfm_score_1_to_10, build_1_10, speed_index, frame, overall_score, performance_score, value_score, ride_comfort_1_10, posture_1_10', { count: 'exact' })
     .ilike('category', `%${categoryName}%`)
     .order('year', { ascending: false })
     .limit(INITIAL_LOAD)
@@ -67,7 +67,7 @@ async function getInitialBikes(slug: string) {
   const brandName = slug.replace(/-/g, ' ')
   const { data: brandData, count: brandCount } = await supabaseServer
     .from('bikes')
-    .select('id, brand, model, year, price, slug, category, sub_category, images, vfm_score_1_to_10, build_1_10, speed_index, frame', { count: 'exact' })
+    .select('id, brand, model, year, price, slug, category, sub_category, images, vfm_score_1_to_10, build_1_10, speed_index, frame, overall_score', { count: 'exact' })
     .ilike('brand', `%${brandName}%`)
     .order('year', { ascending: false })
     .limit(INITIAL_LOAD)

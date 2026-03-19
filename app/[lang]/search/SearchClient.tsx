@@ -3,7 +3,26 @@
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState, useMemo } from 'react'
 import BikeCard from '@/components/BikeCard'
-import { Bike } from '@/lib/supabase'
+
+interface SearchBike {
+    id: number
+    brand: string
+    model: string
+    year: number | null
+    price: number | null
+    slug: string
+    category: string
+    sub_category: string | null
+    primary_image: string | null
+    vfm_score_1_to_10: number | null
+    build_1_10: number | null
+    speed_index: number | null
+    ride_comfort_1_10: number | null
+    frame?: string | null
+    performance_score?: number | null
+    value_score?: number | null
+    posture_1_10?: number | null
+}
 
 interface SearchClientProps {
     dict: any
@@ -14,8 +33,8 @@ export default function SearchClient({ dict, lang }: SearchClientProps) {
     const searchParams = useSearchParams()
     const router = useRouter()
     const query = searchParams.get('q')
-    const [results, setResults] = useState<Bike[]>([])
-    const [filteredResults, setFilteredResults] = useState<Bike[]>([])
+    const [results, setResults] = useState<SearchBike[]>([])
+    const [filteredResults, setFilteredResults] = useState<SearchBike[]>([])
     const [loading, setLoading] = useState(false)
     const [searchInput, setSearchInput] = useState(query || '')
 

@@ -17,6 +17,7 @@ interface Bike {
   vfm_score_1_to_10: number | null
   build_1_10: number | null
   speed_index: number | null
+  overall_score: number | null
   performance_score: number | null
   value_score: number | null
   ride_comfort_1_10: number | null
@@ -158,11 +159,7 @@ export default function CategoryPageContent({
         result.sort((a, b) => (b.price || 0) - (a.price || 0))
         break
       case 'score':
-        result.sort((a, b) => {
-          const scoreA = ((a.vfm_score_1_to_10 || 0) + (a.build_1_10 || 0)) / 2
-          const scoreB = ((b.vfm_score_1_to_10 || 0) + (b.build_1_10 || 0)) / 2
-          return scoreB - scoreA
-        })
+        result.sort((a, b) => (b.overall_score || 0) - (a.overall_score || 0))
         break
       case 'value-desc':
         result.sort((a, b) => (b.value_score || 0) - (a.value_score || 0))

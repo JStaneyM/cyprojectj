@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { generateUrlSlug } from '@/lib/utils'
 
 interface Category {
   name: string
@@ -16,11 +17,40 @@ interface FooterProps {
 
 export default function Footer({ categories, lang }: FooterProps) {
   const currentYear = new Date().getFullYear()
+  const footerCategories = [
+    { name: 'Road Bikes', slug: 'roadbikes' },
+    { name: 'E-bikeRoad Bikes', slug: 'e-bikeroadbikes' },
+    { name: 'Mountain Bikes', slug: 'mountainbikes' },
+  ]
+  const footerSubCategories = [
+    { name: 'General Urban', categorySlug: 'roadbikes' },
+    { name: 'Mountain', categorySlug: 'mountainbikes' },
+    { name: 'Dirt Jump', categorySlug: 'mountainbikes' },
+    { name: 'Downhill', categorySlug: 'mountainbikes' },
+    { name: 'Fatbike', categorySlug: 'mountainbikes' },
+    { name: 'Enduro', categorySlug: 'mountainbikes' },
+    { name: 'Trail', categorySlug: 'mountainbikes' },
+    { name: 'Crosscountry', categorySlug: 'mountainbikes' },
+    { name: 'AeroRace', categorySlug: 'roadbikes' },
+    { name: 'Track', categorySlug: 'roadbikes' },
+    { name: 'General Road', categorySlug: 'roadbikes' },
+    { name: 'Touring', categorySlug: 'roadbikes' },
+    { name: 'Cyclocross', categorySlug: 'roadbikes' },
+    { name: 'Aero', categorySlug: 'roadbikes' },
+    { name: 'Triathlon', categorySlug: 'roadbikes' },
+    { name: 'Endurance', categorySlug: 'roadbikes' },
+    { name: 'Race', categorySlug: 'roadbikes' },
+    { name: 'Gravel', categorySlug: 'roadbikes' },
+  ]
+  const subCategoryColumns = [
+    footerSubCategories.slice(0, Math.ceil(footerSubCategories.length / 2)),
+    footerSubCategories.slice(Math.ceil(footerSubCategories.length / 2)),
+  ]
 
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-12">
           {/* Brand */}
           <div>
             <h3 className="text-2xl font-bold text-white mb-4">MatchBikes</h3>
@@ -50,21 +80,42 @@ export default function Footer({ categories, lang }: FooterProps) {
           <div>
             <h4 className="text-lg font-semibold text-white mb-4">Categories</h4>
             <ul className="space-y-2">
-              {categories.slice(0, 6).map((category) => (
+              {footerCategories.map((category) => (
                 <li key={category.slug}>
                   <Link
                     href={`/${lang}/${category.slug}`}
                     className="text-gray-400 hover:text-white transition-colors flex items-center gap-2"
                   >
                     <span>→</span>
-                    {category.name} Bikes
+                    {category.name}
                   </Link>
                 </li>
               ))}
-              {categories.length === 0 && (
+              {footerCategories.length === 0 && (
                 <li className="text-gray-500">No categories yet</li>
               )}
             </ul>
+          </div>
+
+          {/* Sub Categories */}
+          <div>
+            <h4 className="text-lg font-semibold text-white mb-4">Sub Categories</h4>
+            <div className="grid grid-cols-2 gap-x-6">
+              {subCategoryColumns.map((column, columnIndex) => (
+                <ul key={columnIndex} className="space-y-2">
+                  {column.map((subcategory) => (
+                    <li key={`${subcategory.categorySlug}-${subcategory.name}`}>
+                      <Link
+                        href={`/${lang}/${subcategory.categorySlug}/${generateUrlSlug(subcategory.name)}`}
+                        className="text-gray-400 hover:text-white transition-colors"
+                      >
+                        {subcategory.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ))}
+            </div>
           </div>
 
           {/* Quick Links */}

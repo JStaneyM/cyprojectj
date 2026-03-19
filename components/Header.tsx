@@ -237,7 +237,7 @@ export default function Header() {
 
                 {/* Search Suggestions Dropdown */}
                 {showSuggestions && suggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50">
+                  <div className="absolute top-full left-0 mt-2 w-[44rem] max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50">
                     {suggestions.map((suggestion) => (
                       <div
                         key={suggestion.id}
@@ -275,14 +275,14 @@ export default function Header() {
 
                 {/* Loading State */}
                 {isLoadingSuggestions && searchQuery.trim().length >= 2 && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50">
+                  <div className="absolute top-full left-0 mt-2 w-[44rem] max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50">
                     <p className="text-sm text-gray-500 text-center">Searching...</p>
                   </div>
                 )}
 
                 {/* No Results State */}
                 {showSuggestions && !isLoadingSuggestions && suggestions.length === 0 && searchQuery.trim().length >= 2 && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50">
+                  <div className="absolute top-full left-0 mt-2 w-[44rem] max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50">
                     <p className="text-sm text-gray-500 text-center">No bikes found. Try a different search term.</p>
                   </div>
                 )}

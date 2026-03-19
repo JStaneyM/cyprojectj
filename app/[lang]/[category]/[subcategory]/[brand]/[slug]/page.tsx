@@ -93,10 +93,41 @@ export default async function BikePage({ params }: PageProps) {
   if (!bike) notFound()
 
   const dict = await getDictionary(params.lang)
+  const englishDict = params.lang === 'en' ? dict : await getDictionary('en')
 
   // Helper to resolve nested keys
   const t = (key: string) => {
     return key.split('.').reduce((o: any, i) => (o ? o[i] : key), dict) || key
+  }
+
+  const findDictionaryPathByValue = (node: any, target: string, currentPath = ''): string | null => {
+    if (!node || typeof node !== 'object') return null
+
+    for (const [key, value] of Object.entries(node)) {
+      const nextPath = currentPath ? `${currentPath}.${key}` : key
+
+      if (typeof value === 'string') {
+        if (value.trim().toLowerCase() === target.trim().toLowerCase()) {
+          return nextPath
+        }
+        continue
+      }
+
+      const nestedMatch = findDictionaryPathByValue(value, target, nextPath)
+      if (nestedMatch) return nestedMatch
+    }
+
+    return null
+  }
+
+  const translateLookupValue = (value: string) => {
+    if (!value) return value
+    if (value.includes('.')) return t(value)
+
+    const bucketPath = findDictionaryPathByValue((englishDict as any).buckets, value, 'buckets')
+    if (bucketPath) return t(bucketPath)
+
+    return value
   }
 
   const rawMetrics = calculateBikeMetrics(bike)
@@ -113,7 +144,7 @@ export default async function BikePage({ params }: PageProps) {
     acc[key] = {
       ...metric,
       label: t(metric.label),
-      description: t(metric.description)
+      description: translateLookupValue(metric.description)
     }
     return acc
   }, {}) as typeof rawMetrics
@@ -159,6 +190,49 @@ export default async function BikePage({ params }: PageProps) {
   localizedBike.general_score_explanation = localizedBike.build_reason || localizedBike.general_score_explanation
   const geometryData = parseGeometryData(bike.geometry_data)
   const comparisonBike = { ...localizedBike, image: bike.images?.[0] || null }
+  const speedScore = localizedBike.speed_index !== null && localizedBike.speed_index !== undefined
+    ? localizedBike.speed_index / 10
+    : null
+  const climbScore = localizedBike.climb_1_10 !== null && localizedBike.climb_1_10 !== undefined
+    ? localizedBike.climb_1_10 / 10
+    : null
+  const aeroScore = localizedBike.aero_1_10 !== null && localizedBike.aero_1_10 !== undefined
+    ? localizedBike.aero_1_10 / 10
+    : null
+  const postureScore = localizedBike.posture_1_10 !== null && localizedBike.posture_1_10 !== undefined
+    ? localizedBike.posture_1_10 / 10
+    : null
+  const handlingScore = localizedBike.responsiveness_1_10 !== null && localizedBike.responsiveness_1_10 !== undefined
+    ? localizedBike.responsiveness_1_10 / 10
+    : null
+  const fitFlexScore = localizedBike.fit_flexibility_1_10 !== null && localizedBike.fit_flexibility_1_10 !== undefined
+    ? localizedBike.fit_flexibility_1_10 / 10
+    : null
+  const comfortScore = localizedBike.ride_comfort_1_10 !== null && localizedBike.ride_comfort_1_10 !== undefined
+    ? localizedBike.ride_comfort_1_10 / 10
+    : null
+  const buildScore = localizedBike.build_1_10 !== null && localizedBike.build_1_10 !== undefined
+    ? localizedBike.build_1_10 / 10
+    : null
+  const valueScore = localizedBike.vfm_score_1_to_10 !== null && localizedBike.vfm_score_1_to_10 !== undefined
+    ? localizedBike.vfm_score_1_to_10 / 10
+    : null
+  const showSuspensionMetric =
+    (localizedBike.category?.toLowerCase().includes('mountain') || localizedBike.category?.toLowerCase().includes('emtb')) &&
+    !!metrics.suspension
+  const fitMetricCount = [postureScore, handlingScore, fitFlexScore, comfortScore].filter(score => score !== null).length
+  const fitGridCols = {
+    1: 'grid-cols-1 lg:grid-cols-1',
+    2: 'grid-cols-1 lg:grid-cols-2',
+    3: 'grid-cols-1 lg:grid-cols-3',
+    4: 'grid-cols-1 lg:grid-cols-4',
+  }[fitMetricCount] || 'grid-cols-1 lg:grid-cols-4'
+  const valueMetricCount = [buildScore, valueScore, true].filter(Boolean).length
+  const valueGridCols = {
+    1: 'grid-cols-1 lg:grid-cols-1',
+    2: 'grid-cols-1 lg:grid-cols-3',
+    3: 'grid-cols-1 lg:grid-cols-3',
+  }[valueMetricCount] || 'grid-cols-1 lg:grid-cols-3'
 
   const subCategoryName = localizedBike.sub_category
   const [sameBrandBikes, bikes2025, bikes2024, bikes2023, bikes2022, betterValueBikes] = await Promise.all([
@@ -257,7 +331,7 @@ export default async function BikePage({ params }: PageProps) {
                       <svg key={i} className={`w-6 h-6 ${i < Math.floor(metrics.overallScore / 2) ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                     ))}
                   </div>
-                  <p className="text-gray-600 font-medium text-sm">Rating</p>
+                  <p className="text-gray-600 font-medium text-sm">{dict.common?.rating || 'Rating'}</p>
                 </div>
               </div>
             </div>
@@ -268,37 +342,53 @@ export default async function BikePage({ params }: PageProps) {
 
           <ScoreSection>
             <ScoreSectionWithToggle title={t('scores.performance') || "Performance"} subtitle="Built for speed and efficiency" gridCols="grid-cols-1 lg:grid-cols-3">
-              <ScoreCard label={metrics.speed.label} score={metrics.speed.score} maxScore={10} description={metrics.speed.description} variant="inline" explanation={localizedBike.speed_reason || localizedBike.performance_score_explanation} />
-              <ScoreCard
-                label={metrics.climbingEfficiency.label}
-                score={localizedBike.climb_1_10 ?? 0}
-                maxScore={10}
-                description={localizedBike.climb_bucket || metrics.climbingEfficiency.description}
-                variant="inline"
-                explanation={localizedBike.climb_reason || localizedBike.climbing_efficiency_explanation}
-              />
-              {/* Show Suspension for MTB, Aerodynamics for others */}
-              {(localizedBike.category?.toLowerCase().includes('mountain') || localizedBike.category?.toLowerCase().includes('emtb')) && metrics.suspension ? (
+              {speedScore !== null && (
+                <ScoreCard label={metrics.speed.label} score={speedScore} maxScore={10} description={metrics.speed.description} variant="inline" explanation={localizedBike.speed_reason} />
+              )}
+              {climbScore !== null && (
+                <ScoreCard
+                  label={metrics.climbingEfficiency.label}
+                  score={climbScore}
+                  maxScore={10}
+                  description={localizedBike.climb_bucket || metrics.climbingEfficiency.description}
+                  variant="inline"
+                  explanation={localizedBike.climb_reason || localizedBike.climbing_efficiency_explanation}
+                />
+              )}
+              {showSuspensionMetric && (
                 <ScoreCard label={metrics.suspension.label} score={metrics.suspension.score} maxScore={10} description={metrics.suspension.description} variant="inline" explanation={localizedBike.suspension_reason} />
-              ) : (
-                <ScoreCard label={metrics.aerodynamics.label} score={metrics.aerodynamics.score} maxScore={10} description={metrics.aerodynamics.description} variant="inline" explanation={localizedBike.aero_reason || localizedBike.aerodynamics_explanation} />
+              )}
+              {!showSuspensionMetric && aeroScore !== null && (
+                <ScoreCard label={metrics.aerodynamics.label} score={aeroScore} maxScore={10} description={metrics.aerodynamics.description} variant="inline" explanation={localizedBike.aero_reason || localizedBike.aerodynamics_explanation} />
               )}
             </ScoreSectionWithToggle>
           </ScoreSection>
 
           <ScoreSection>
-            <ScoreSectionWithToggle title={t('scores.fit') || "Fit Score"} subtitle="Dialed-in Fit & Comfort" gridCols="grid-cols-1 lg:grid-cols-4">
-              <ScoreCard label={metrics.ridingPosition.label} score={metrics.ridingPosition.score} maxScore={10} description={metrics.ridingPosition.description} variant="inline" explanation={localizedBike.posture_reason || localizedBike.riding_position_explanation} />
-              <ScoreCard label={metrics.handling.label} score={metrics.handling.score} maxScore={10} description={metrics.handling.description} variant="inline" explanation={localizedBike.responsiveness_reason || localizedBike.handling_explanation} />
-              <ScoreCard label={metrics.fitFlexibility.label} score={metrics.fitFlexibility.score} maxScore={10} description={metrics.fitFlexibility.description} variant="inline" explanation={localizedBike.fit_reason || localizedBike.fit_flexibility_explanation} />
-              <ScoreCard label={metrics.rideComfort.label} score={metrics.rideComfort.score} maxScore={10} description={metrics.rideComfort.description} variant="inline" explanation={localizedBike.comfort_reason || localizedBike.ride_comfort_explanation} />
+            <ScoreSectionWithToggle title={t('scores.fit') || "Fit Score"} subtitle="Dialed-in Fit & Comfort" gridCols={fitGridCols}>
+              {postureScore !== null && (
+                <ScoreCard label={metrics.ridingPosition.label} score={postureScore} maxScore={10} description={metrics.ridingPosition.description} variant="inline" explanation={localizedBike.posture_reason || localizedBike.riding_position_explanation} />
+              )}
+              {handlingScore !== null && (
+                <ScoreCard label={metrics.handling.label} score={handlingScore} maxScore={10} description={metrics.handling.description} variant="inline" explanation={localizedBike.responsiveness_reason || localizedBike.handling_explanation} />
+              )}
+              {fitFlexScore !== null && (
+                <ScoreCard label={metrics.fitFlexibility.label} score={fitFlexScore} maxScore={10} description={metrics.fitFlexibility.description} variant="inline" explanation={localizedBike.fit_reason || localizedBike.fit_flexibility_explanation} />
+              )}
+              {comfortScore !== null && (
+                <ScoreCard label={metrics.rideComfort.label} score={comfortScore} maxScore={10} description={metrics.rideComfort.description} variant="inline" explanation={localizedBike.comfort_reason || localizedBike.ride_comfort_explanation} />
+              )}
             </ScoreSectionWithToggle>
           </ScoreSection>
 
           <ScoreSection>
-            <ScoreSectionWithToggle title={t('scores.value') || "Value"} gridCols="grid-cols-1 lg:grid-cols-3">
-              <ScoreCard label={metrics.buildQuality.label} score={metrics.buildQuality.score} maxScore={10} description={metrics.buildQuality.description} variant="inline" metricType="value" explanation={localizedBike.build_reason || localizedBike.build_quality_explanation} />
-              <ScoreCard label={metrics.valueForMoney.label} score={metrics.valueForMoney.score} maxScore={10} description={metrics.valueForMoney.description} variant="inline" metricType="value" explanation={localizedBike.vfm_reason || localizedBike.value_for_money_explanation} />
+            <ScoreSectionWithToggle title={t('scores.value') || "Value"} gridCols={valueGridCols}>
+              {buildScore !== null && (
+                <ScoreCard label={metrics.buildQuality.label} score={buildScore} maxScore={10} description={metrics.buildQuality.description} variant="inline" metricType="value" explanation={localizedBike.build_reason || localizedBike.build_quality_explanation} />
+              )}
+              {valueScore !== null && (
+                <ScoreCard label={metrics.valueForMoney.label} score={valueScore} maxScore={10} description={metrics.valueForMoney.description} variant="inline" metricType="value" explanation={localizedBike.vfm_reason || localizedBike.value_for_money_explanation} />
+              )}
               <ScoreCard label={metrics.surfaceRange.label} score={metrics.surfaceRange.score} maxScore={10} description={metrics.surfaceRange.description} variant="inline" explanation={localizedBike.surface_reason || localizedBike.surface_range_explanation} hideValue={true} />
             </ScoreSectionWithToggle>
           </ScoreSection>
