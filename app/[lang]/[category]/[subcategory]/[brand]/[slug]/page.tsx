@@ -220,6 +220,7 @@ export default async function BikePage({ params }: PageProps) {
   const showSuspensionMetric =
     (localizedBike.category?.toLowerCase().includes('mountain') || localizedBike.category?.toLowerCase().includes('emtb')) &&
     !!metrics.suspension
+  const suspensionMetric = metrics.suspension
   const fitMetricCount = [postureScore, handlingScore, fitFlexScore, comfortScore].filter(score => score !== null).length
   const fitGridCols = {
     1: 'grid-cols-1 lg:grid-cols-1',
@@ -355,8 +356,8 @@ export default async function BikePage({ params }: PageProps) {
                   explanation={localizedBike.climb_reason || localizedBike.climbing_efficiency_explanation}
                 />
               )}
-              {showSuspensionMetric && (
-                <ScoreCard label={metrics.suspension.label} score={metrics.suspension.score} maxScore={10} description={metrics.suspension.description} variant="inline" explanation={localizedBike.suspension_reason} />
+              {showSuspensionMetric && suspensionMetric && suspensionMetric.score !== null && (
+                <ScoreCard label={suspensionMetric.label} score={suspensionMetric.score} maxScore={10} description={suspensionMetric.description} variant="inline" explanation={localizedBike.suspension_reason} />
               )}
               {!showSuspensionMetric && aeroScore !== null && (
                 <ScoreCard label={metrics.aerodynamics.label} score={aeroScore} maxScore={10} description={metrics.aerodynamics.description} variant="inline" explanation={localizedBike.aero_reason || localizedBike.aerodynamics_explanation} />
@@ -389,14 +390,14 @@ export default async function BikePage({ params }: PageProps) {
               {valueScore !== null && (
                 <ScoreCard label={metrics.valueForMoney.label} score={valueScore} maxScore={10} description={metrics.valueForMoney.description} variant="inline" metricType="value" explanation={localizedBike.vfm_reason || localizedBike.value_for_money_explanation} />
               )}
-              <ScoreCard label={metrics.surfaceRange.label} score={metrics.surfaceRange.score} maxScore={10} description={metrics.surfaceRange.description} variant="inline" explanation={localizedBike.surface_reason || localizedBike.surface_range_explanation} hideValue={true} />
+              <ScoreCard label={metrics.surfaceRange.label} score={metrics.surfaceRange.score ?? 0} maxScore={10} description={metrics.surfaceRange.description} variant="inline" explanation={localizedBike.surface_reason || localizedBike.surface_range_explanation} hideValue={true} />
             </ScoreSectionWithToggle>
           </ScoreSection>
 
           {metrics.battery && (
             <div className="mt-8 max-w-3xl">
               <h3 className="text-xl font-bold text-gray-900 mb-5">{metrics.battery.label}</h3>
-              <ScoreCard label={metrics.battery.label} score={metrics.battery.score} maxScore={10} description={metrics.battery.description} variant="inline" explanation={localizedBike.battery_reason} customValue={localizedBike.battery_range || undefined} />
+              <ScoreCard label={metrics.battery.label} score={metrics.battery.score ?? 0} maxScore={10} description={metrics.battery.description} variant="inline" explanation={localizedBike.battery_reason} customValue={localizedBike.battery_range || undefined} />
             </div>
           )}
         </div>

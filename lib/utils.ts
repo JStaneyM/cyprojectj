@@ -179,19 +179,19 @@ export function calculateBikeMetrics(bike: Bike): BikeMetrics {
       label: 'scores.performance',
       score: performanceScore,
       maxScore: 10,
-      description: getPerformanceLabel(performanceScore),
+      description: getPerformanceLabel(performanceScore ?? 0),
     },
     value: {
       label: 'scores.value',
       score: valueScore,
       maxScore: 10,
-      description: getValueLabel(valueScore),
+      description: getValueLabel(valueScore ?? 0),
     },
     fit: {
       label: 'scores.fit',
       score: fitScore,
       maxScore: 10,
-      description: getFitLabel(fitScore),
+      description: getFitLabel(fitScore ?? 0),
     },
     general: {
       label: 'scores.general',

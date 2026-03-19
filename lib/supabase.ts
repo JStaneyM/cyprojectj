@@ -206,7 +206,7 @@ export interface Bike {
 
 export interface BikeScore {
   label: string
-  score: number
+  score: number | null
   maxScore: number
   description: string
 }
