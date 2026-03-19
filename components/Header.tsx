@@ -6,6 +6,7 @@ import { useRouter, useParams, usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { useComparison } from '@/context/ComparisonContext'
 import LanguageSwitcher from './LanguageSwitcher'
+import { generateBikeUrl } from '@/lib/utils'
 
 interface Category {
   name: string
@@ -120,16 +121,7 @@ export default function Header() {
   }
 
   const handleSuggestionClick = (suggestion: SearchSuggestion) => {
-    // Generate new SEO-friendly URL
-    const categorySlug = suggestion.category.toLowerCase().replace(/\s+/g, '') + 'bikes'
-    const subCategorySlug = suggestion.sub_category
-      ? suggestion.sub_category.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')
-      : 'general'
-    const brandSlug = suggestion.brand.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')
-    const yearSlug = suggestion.year ? suggestion.year.toString() : 'unknown'
-    const modelSlug = suggestion.model.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')
-
-    const newUrl = `/${lang}/${categorySlug}/${subCategorySlug}/${brandSlug}/${yearSlug}/${modelSlug}`
+    const newUrl = generateBikeUrl(suggestion, lang)
     router.push(newUrl)
     setSearchQuery('')
     setShowSuggestions(false)
@@ -187,15 +179,20 @@ export default function Header() {
             </button>
 
             {/* Logo */}
-            <Link href={`/${lang}`} className="flex items-center gap-2">
-              <div className="text-2xl font-bold text-blue-600">
-                MatchBikes
-              </div>
+            <Link href={`/${lang}`} className="flex items-center">
+              <Image
+                src="/logo/Matchbikes%20logo-2.png"
+                alt="MatchBikes"
+                width={565}
+                height={148}
+                priority
+                className="h-8 w-auto max-w-[180px] md:h-10 md:max-w-[240px] lg:h-11 lg:max-w-[280px]"
+              />
             </Link>
           </div>
 
           {/* Desktop Navigation - Dynamic Categories */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-6 ml-6 lg:ml-8">
             {categories.length > 0 ? (
               categories.map((category) => (
                 <Link

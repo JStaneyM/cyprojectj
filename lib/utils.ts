@@ -336,23 +336,19 @@ export function generateUrlSlug(text: string | null): string {
 
 /**
  * Generate new SEO-friendly bike URL
- * Format: /category/sub-category/brand/year/model
+ * Format: /lang/category/sub-category/brand/slug
  */
 export function generateBikeUrl(bike: {
   category: string
   sub_category?: string | null
   brand: string
-  year?: number | null
-  model: string
-  slug?: string // Old slug for fallback
+  slug: string
 }, lang: string = 'en'): string {
   const categorySlug = formatCategoryForUrl(bike.category) + 'bikes'
   const subCategorySlug = bike.sub_category ? generateUrlSlug(bike.sub_category) : 'general'
   const brandSlug = generateUrlSlug(bike.brand)
-  const yearSlug = bike.year ? bike.year.toString() : 'unknown'
-  const modelSlug = generateUrlSlug(bike.model)
 
-  return `/${lang}/${categorySlug}/${subCategorySlug}/${brandSlug}/${yearSlug}/${modelSlug}`
+  return `/${lang}/${categorySlug}/${subCategorySlug}/${brandSlug}/${bike.slug}`
 }
 
 /**
@@ -362,16 +358,14 @@ export function parseBikeUrl(segments: string[]): {
   category: string
   subCategory: string
   brand: string
-  year: string
-  model: string
+  slug: string
 } | null {
-  if (segments.length < 5) return null
+  if (segments.length < 4) return null
 
   return {
     category: segments[0],
     subCategory: segments[1],
     brand: segments[2],
-    year: segments[3],
-    model: segments[4],
+    slug: segments[3],
   }
 }

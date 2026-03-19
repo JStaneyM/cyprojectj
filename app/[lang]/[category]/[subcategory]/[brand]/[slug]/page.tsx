@@ -20,8 +20,7 @@ interface PageProps {
     category: string
     subcategory: string
     brand: string
-    year: string
-    model: string
+    slug: string
   }
 }
 
@@ -31,46 +30,24 @@ interface PageProps {
 // I will keep the structure but add 'use client' and move data fetching to a separate server function if needed.
 // Actually, I'll create a Client Page component.
 
-// Decode URL parameters - replace hyphens with spaces for matching
 async function getBikeFromParams(params: PageProps['params']): Promise<Bike | null> {
-  const brand = decodeURIComponent(params.brand).replace(/-/g, ' ').trim()
-  const model = decodeURIComponent(params.model).replace(/-/g, ' ').trim()
-  const year = params.year !== 'unknown' ? parseInt(params.year) : null
+  const slug = decodeURIComponent(params.slug).trim()
 
-  console.log('[Bike Lookup] Searching for:', { brand, model, year, params })
+  console.log('[Bike Lookup] Searching by slug:', { slug, params })
 
   try {
-    let query = supabaseServer.from('bikes').select('*').ilike('brand', brand).ilike('model', model)
-    if (year) query = query.eq('year', year)
-    const { data } = await query.maybeSingle()
+    const { data } = await supabaseServer
+      .from('bikes')
+      .select('*')
+      .eq('slug', slug)
+      .maybeSingle()
+
     if (data) {
-      console.log('[Bike Lookup] Found exact match:', data.id, data.brand, data.model)
+      console.log('[Bike Lookup] Found slug match:', data.id, data.slug)
       return data as Bike
     }
 
-    console.log('[Bike Lookup] No exact match, trying partial match...')
-    // Partial matching fallback
-    const modelWords = model.split(' ').filter(w => w.length > 2)
-    if (modelWords.length > 0) {
-      const modelPattern = modelWords.join('%')
-      let partialQuery = supabaseServer.from('bikes').select('*').ilike('brand', brand).ilike('model', `%${modelPattern}%`)
-      if (year) partialQuery = partialQuery.eq('year', year)
-      const { data: partialData } = await partialQuery.limit(1).maybeSingle()
-      if (partialData) {
-        console.log('[Bike Lookup] Found partial match:', partialData.id, partialData.brand, partialData.model)
-        return partialData as Bike
-      }
-    }
-
-    console.log('[Bike Lookup] No partial match, trying without year...')
-    if (year) {
-      const { data: dataWithoutYear } = await supabaseServer.from('bikes').select('*').ilike('brand', brand).ilike('model', model).limit(1).maybeSingle()
-      if (dataWithoutYear) {
-        console.log('[Bike Lookup] Found match without year:', dataWithoutYear.id, dataWithoutYear.brand, dataWithoutYear.model)
-        return dataWithoutYear as Bike
-      }
-    }
-    console.log('[Bike Lookup] No bike found for params:', { brand, model, year })
+    console.log('[Bike Lookup] No bike found for slug:', slug)
     return null
   } catch (error) {
     console.error('[Bike Lookup] Error fetching bike:', error)
@@ -79,14 +56,13 @@ async function getBikeFromParams(params: PageProps['params']): Promise<Bike | nu
 }
 
 export async function generateStaticParams() {
-  const { data: bikes } = await supabaseServer.from('bikes').select('category, sub_category, brand, year, model').limit(10)
+  const { data: bikes } = await supabaseServer.from('bikes').select('category, sub_category, brand, slug').limit(10)
   if (!bikes) return []
   return bikes.map((bike) => ({
     category: formatCategoryForUrl(bike.category),
     subcategory: bike.sub_category ? generateUrlSlug(bike.sub_category) : 'general',
     brand: generateUrlSlug(bike.brand),
-    year: bike.year ? bike.year.toString() : 'unknown',
-    model: generateUrlSlug(bike.model),
+    slug: bike.slug,
   }))
 }
 
@@ -104,7 +80,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   // Generate alternates
   // We need to construct the path without the lang prefix
-  const pathSuffix = `/${params.category}/${params.subcategory}/${params.brand}/${params.year}/${params.model}`
+  const pathSuffix = `/${params.category}/${params.subcategory}/${params.brand}/${params.slug}`
   const alternates = getMetadataAlternates(pathSuffix, params.lang)
 
   return { title, description, alternates }
@@ -181,7 +157,6 @@ export default async function BikePage({ params }: PageProps) {
   localizedBike.value_score_explanation = localizedBike.vfm_reason || localizedBike.value_score_explanation
   localizedBike.fit_score_explanation = localizedBike.fit_reason || localizedBike.fit_score_explanation
   localizedBike.general_score_explanation = localizedBike.build_reason || localizedBike.general_score_explanation
-
   const geometryData = parseGeometryData(bike.geometry_data)
   const comparisonBike = { ...localizedBike, image: bike.images?.[0] || null }
 
@@ -196,7 +171,7 @@ export default async function BikePage({ params }: PageProps) {
   ])
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cycleproject.vercel.app'
-  const bikeUrl = `${baseUrl}/${params.lang}/${params.category}/${params.subcategory}/${params.brand}/${params.year}/${params.model}`
+  const bikeUrl = `${baseUrl}/${params.lang}/${params.category}/${params.subcategory}/${params.brand}/${params.slug}`
 
   // Ensure title/desc are from localizedBike for page metadata/h1
   // But metadata generation is separate. I need to fix generateMetadata too if I want it localized there.
@@ -294,7 +269,14 @@ export default async function BikePage({ params }: PageProps) {
           <ScoreSection>
             <ScoreSectionWithToggle title={t('scores.performance') || "Performance"} subtitle="Built for speed and efficiency" gridCols="grid-cols-1 lg:grid-cols-3">
               <ScoreCard label={metrics.speed.label} score={metrics.speed.score} maxScore={10} description={metrics.speed.description} variant="inline" explanation={localizedBike.speed_reason || localizedBike.performance_score_explanation} />
-              <ScoreCard label={metrics.climbingEfficiency.label} score={metrics.climbingEfficiency.score} maxScore={10} description={metrics.climbingEfficiency.description} variant="inline" explanation={localizedBike.climb_reason || localizedBike.climbing_efficiency_explanation} />
+              <ScoreCard
+                label={metrics.climbingEfficiency.label}
+                score={localizedBike.climb_1_10 ?? 0}
+                maxScore={10}
+                description={localizedBike.climb_bucket || metrics.climbingEfficiency.description}
+                variant="inline"
+                explanation={localizedBike.climb_reason || localizedBike.climbing_efficiency_explanation}
+              />
               {/* Show Suspension for MTB, Aerodynamics for others */}
               {(localizedBike.category?.toLowerCase().includes('mountain') || localizedBike.category?.toLowerCase().includes('emtb')) && metrics.suspension ? (
                 <ScoreCard label={metrics.suspension.label} score={metrics.suspension.score} maxScore={10} description={metrics.suspension.description} variant="inline" explanation={localizedBike.suspension_reason} />

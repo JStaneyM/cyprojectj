@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { supabaseServer } from '@/lib/supabase'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, generateBikeUrl } from '@/lib/utils'
 
 export default async function FeaturedBikes() {
   // Fetch top bikes (highest scores)
   const { data: bikes } = await supabaseServer
     .from('bikes')
-    .select('id, brand, model, slug, category, price, images, vfm_score_1_to_10, build_1_10, speed_index, ride_comfort_1_10')
+    .select('id, brand, model, slug, category, sub_category, price, images, vfm_score_1_to_10, build_1_10, speed_index, ride_comfort_1_10')
     .not('vfm_score_1_to_10', 'is', null)
     .order('vfm_score_1_to_10', { ascending: false })
     .limit(6)
@@ -28,12 +28,10 @@ export default async function FeaturedBikes() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {bikes.map((bike, index) => {
-            const categorySlug = bike.category.toLowerCase().replace(/\s+/g, '') + 'bikes'
-
             return (
               <Link
                 key={bike.id}
-                href={`/${categorySlug}/${bike.slug}`}
+                href={generateBikeUrl(bike)}
                 className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-2"
                 style={{ animationDelay: `${index * 100}ms` }}
               >

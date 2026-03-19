@@ -179,12 +179,23 @@ export async function POST(request: NextRequest) {
           }
         })
 
-        // Add integer fields (ratings 1-10)
-        const integerFields = [
+        // Preserve decimal scores for 1-10 rating fields.
+        const ratingFields = [
           'fit_flexibility_1_10', 'vfm_score_1_to_10', 'build_1_10', 'aero_1_10',
-          'climb_1_10', 'suspension_1_10', 'posture_1_10', 'torso_angle_deg',
-          'responsiveness_1_10', 'speed_index', 'ride_comfort_1_10'
+          'climb_1_10', 'suspension_1_10', 'posture_1_10',
+          'responsiveness_1_10', 'ride_comfort_1_10'
         ]
+
+        ratingFields.forEach(field => {
+          if (rowData[field]) {
+            const cleaned = rowData[field].toString().replace(/[^0-9.]/g, '')
+            if (cleaned) {
+              bikeData[field] = parseFloat(cleaned)
+            }
+          }
+        })
+
+        const integerFields = ['torso_angle_deg', 'speed_index']
 
         integerFields.forEach(field => {
           if (rowData[field]) {

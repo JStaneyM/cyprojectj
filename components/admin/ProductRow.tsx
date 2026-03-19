@@ -3,7 +3,8 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { formatPrice } from '@/lib/utils'
+import { useParams } from 'next/navigation'
+import { formatPrice, generateBikeUrl } from '@/lib/utils'
 
 interface ProductBike {
   id: number
@@ -11,6 +12,7 @@ interface ProductBike {
   model: string
   slug: string
   category: string
+  sub_category: string | null
   price: number | null
   images: string[] | null
   year: number
@@ -25,7 +27,8 @@ interface ProductRowProps {
 }
 
 export default function ProductRow({ bike, selected, onSelect, onDeleteSuccess }: ProductRowProps) {
-  const categorySlug = bike.category.toLowerCase().replace(/\s+/g, '') + 'bikes'
+  const params = useParams()
+  const lang = (params?.lang as string) || 'en'
 
   const handleDelete = async () => {
     if (!confirm(`Delete ${bike.brand} ${bike.model}? This cannot be undone.`)) {
@@ -111,7 +114,7 @@ export default function ProductRow({ bike, selected, onSelect, onDeleteSuccess }
       <td className="px-6 py-4 text-right">
         <div className="flex items-center justify-end gap-3">
           <Link
-            href={`/${categorySlug}/${bike.slug}`}
+            href={generateBikeUrl(bike, lang)}
             target="_blank"
             className="text-blue-600 hover:text-blue-700 font-medium text-sm"
           >

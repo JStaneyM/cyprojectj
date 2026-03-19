@@ -10,6 +10,7 @@ interface ProductBike {
     model: string
     slug: string
     category: string
+    sub_category: string | null
     price: number | null
     images: string[] | null
     year: number

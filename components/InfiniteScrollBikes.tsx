@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, generateBikeUrl } from '@/lib/utils'
 
 interface Bike {
   id: number
@@ -27,6 +28,8 @@ interface InfiniteScrollBikesProps {
 }
 
 export default function InfiniteScrollBikes({ initialBikes, categorySlug, totalCount }: InfiniteScrollBikesProps) {
+  const params = useParams()
+  const lang = (params?.lang as string) || 'en'
   const [bikes, setBikes] = useState<Bike[]>(initialBikes)
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -81,7 +84,7 @@ export default function InfiniteScrollBikes({ initialBikes, categorySlug, totalC
         {bikes.map((bike) => (
           <Link
             key={bike.id}
-            href={`/${categorySlug}/${bike.slug}`}
+            href={generateBikeUrl(bike, lang)}
             className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all overflow-hidden"
           >
             {/* Image */}

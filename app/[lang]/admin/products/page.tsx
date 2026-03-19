@@ -11,6 +11,7 @@ type ProductBike = {
   model: string
   slug: string
   category: string
+  sub_category: string | null
   price: number | null
   images: string[] | null
   year: number
@@ -21,11 +22,11 @@ export default async function ProductsPage() {
   // Fetch ALL bikes using batch pagination (bypasses 1000 row limit)
   const bikesList = await fetchAllBikes<ProductBike>(
     async (from, to) => {
-      const result = await supabaseServer
-        .from('bikes')
-        .select('id, brand, model, slug, category, price, images, year, created_at')
-        .order('created_at', { ascending: false })
-        .range(from, to)
+        const result = await supabaseServer
+          .from('bikes')
+          .select('id, brand, model, slug, category, sub_category, price, images, year, created_at')
+          .order('created_at', { ascending: false })
+          .range(from, to)
       return result
     }
   )
