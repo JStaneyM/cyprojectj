@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { supabaseServer, Bike } from '@/lib/supabase'
 import { calculateBikeMetrics, parseGeometryData, generateUrlSlug, formatCategoryForUrl, formatPrice, getMetadataAlternates } from '@/lib/utils'
+import { SITE_URL } from '@/lib/site'
 import ScoreCard from '@/components/ScoreCard'
 import ScoreSection from '@/components/ScoreSection'
 import ScoreSectionWithToggle from '@/components/ScoreSectionWithToggle'
@@ -234,6 +235,7 @@ export default async function BikePage({ params }: PageProps) {
     2: 'grid-cols-1 lg:grid-cols-3',
     3: 'grid-cols-1 lg:grid-cols-3',
   }[valueMetricCount] || 'grid-cols-1 lg:grid-cols-3'
+  const metricSectionContainerClass = 'w-full max-w-6xl'
 
   const subCategoryName = localizedBike.sub_category
   const [sameBrandBikes, bikes2025, bikes2024, bikes2023, bikes2022, betterValueBikes] = await Promise.all([
@@ -245,7 +247,7 @@ export default async function BikePage({ params }: PageProps) {
     getBetterValueBikes(bike)
   ])
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cycleproject.vercel.app'
+  const baseUrl = SITE_URL
   const bikeUrl = `${baseUrl}/${params.lang}/${params.category}/${params.subcategory}/${params.brand}/${params.slug}`
 
   // Ensure title/desc are from localizedBike for page metadata/h1
@@ -342,7 +344,7 @@ export default async function BikePage({ params }: PageProps) {
           <InteractiveScoreSummary metrics={metrics} bike={localizedBike} />
 
           <ScoreSection>
-            <ScoreSectionWithToggle title={t('scores.performance') || "Performance"} subtitle="Built for speed and efficiency" gridCols="grid-cols-1 lg:grid-cols-3">
+            <ScoreSectionWithToggle title={t('scores.performance') || "Performance"} subtitle="Built for speed and efficiency" gridCols="grid-cols-1 lg:grid-cols-3" containerClassName={metricSectionContainerClass}>
               {speedScore !== null && (
                 <ScoreCard label={metrics.speed.label} score={speedScore} maxScore={10} description={metrics.speed.description} variant="inline" explanation={localizedBike.speed_reason} />
               )}
@@ -366,7 +368,7 @@ export default async function BikePage({ params }: PageProps) {
           </ScoreSection>
 
           <ScoreSection>
-            <ScoreSectionWithToggle title={t('scores.fit') || "Fit Score"} subtitle="Dialed-in Fit & Comfort" gridCols={fitGridCols}>
+            <ScoreSectionWithToggle title={t('scores.fit') || "Fit Score"} subtitle="Dialed-in Fit & Comfort" gridCols={fitGridCols} containerClassName={metricSectionContainerClass}>
               {postureScore !== null && (
                 <ScoreCard label={metrics.ridingPosition.label} score={postureScore} maxScore={10} description={metrics.ridingPosition.description} variant="inline" explanation={localizedBike.posture_reason || localizedBike.riding_position_explanation} />
               )}
@@ -383,7 +385,7 @@ export default async function BikePage({ params }: PageProps) {
           </ScoreSection>
 
           <ScoreSection>
-            <ScoreSectionWithToggle title={t('scores.value') || "Value"} gridCols={valueGridCols}>
+            <ScoreSectionWithToggle title={t('scores.value') || "Value"} gridCols={valueGridCols} containerClassName={metricSectionContainerClass}>
               {buildScore !== null && (
                 <ScoreCard label={metrics.buildQuality.label} score={buildScore} maxScore={10} description={metrics.buildQuality.description} variant="inline" metricType="value" explanation={localizedBike.build_reason || localizedBike.build_quality_explanation} />
               )}
@@ -395,9 +397,11 @@ export default async function BikePage({ params }: PageProps) {
           </ScoreSection>
 
           {metrics.battery && (
-            <div className="mt-8 max-w-3xl">
+            <div className={`mt-8 ${metricSectionContainerClass}`}>
               <h3 className="text-xl font-bold text-gray-900 mb-5">{metrics.battery.label}</h3>
-              <ScoreCard label={metrics.battery.label} score={metrics.battery.score ?? 0} maxScore={10} description={metrics.battery.description} variant="inline" explanation={localizedBike.battery_reason} customValue={localizedBike.battery_range || undefined} />
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <ScoreCard label={metrics.battery.label} score={metrics.battery.score ?? 0} maxScore={10} description={metrics.battery.description} variant="inline" explanation={localizedBike.battery_reason} customValue={localizedBike.battery_range || undefined} />
+              </div>
             </div>
           )}
         </div>

@@ -1,4 +1,5 @@
 import { Bike, BikeMetrics, BikeScore } from './supabase'
+import { SITE_URL } from './site'
 
 export function generateSlug(brand: string, model: string, year?: number | null): string {
   const text = `${brand}-${model}${year ? `-${year}` : ''}`
@@ -16,18 +17,17 @@ export const SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'es', 'it', 'nl']
  * Generate Metadata alternates for SEO
  */
 export function getMetadataAlternates(pathSuffix: string, currentLang: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cycleproject.vercel.app'
   const languages: Record<string, string> = {}
 
   SUPPORTED_LANGUAGES.forEach(lang => {
-    languages[lang] = `${baseUrl}/${lang}${pathSuffix}`
+    languages[lang] = `${SITE_URL}/${lang}${pathSuffix}`
   })
 
   return {
-    canonical: `${baseUrl}/${currentLang}${pathSuffix}`,
+    canonical: `${SITE_URL}/${currentLang}${pathSuffix}`,
     languages: {
       ...languages,
-      'x-default': `${baseUrl}/en${pathSuffix}`
+      'x-default': `${SITE_URL}/en${pathSuffix}`
     }
   }
 }

@@ -338,8 +338,12 @@ export default function Header() {
               {/* Compare Link */}
               <Link
                 href={`/${lang}/compare`}
-                className="relative text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center gap-1"
+                className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors"
+                style={{ backgroundColor: 'rgb(37, 99, 235)', borderColor: 'rgb(37, 99, 235)' }}
               >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
+                </svg>
                 Compare
                 {selectedBikes.length > 0 && (
                   <span className="bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">

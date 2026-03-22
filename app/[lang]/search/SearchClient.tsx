@@ -45,6 +45,7 @@ export default function SearchClient({ dict, lang }: SearchClientProps) {
     const [selectedYear, setSelectedYear] = useState<string>('')
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 20000])
     const [sortBy, setSortBy] = useState<string>('newest')
+    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
     // Display state
     const [displayCount, setDisplayCount] = useState(15)
@@ -149,17 +150,37 @@ export default function SearchClient({ dict, lang }: SearchClientProps) {
 
             <div className="container mx-auto px-4 py-8">
                 <div className="flex flex-col lg:flex-row gap-8">
+                    <div className="lg:hidden">
+                        <button
+                            onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
+                            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2l-6 7v6l-4 2v-8L3 6V4z" />
+                            </svg>
+                            {dict?.filters?.title || 'Filters'}
+                        </button>
+                    </div>
+
                     {/* Filters Sidebar */}
-                    <aside className="lg:w-64 flex-shrink-0">
+                    <aside className={`${mobileFiltersOpen ? 'block' : 'hidden'} lg:block lg:w-64 flex-shrink-0`}>
                         <div className="bg-white rounded-lg shadow-sm p-6 sticky top-24 border border-gray-100">
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-lg font-bold text-gray-900">{dict?.filters?.title || 'Filters'}</h2>
-                                <button
-                                    onClick={resetFilters}
-                                    className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-                                >
-                                    {dict?.filters?.reset || 'Reset'}
-                                </button>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={resetFilters}
+                                        className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                                    >
+                                        {dict?.filters?.reset || 'Reset'}
+                                    </button>
+                                    <button
+                                        onClick={() => setMobileFiltersOpen(false)}
+                                        className="text-sm text-gray-500 hover:text-gray-700 lg:hidden"
+                                    >
+                                        {dict?.common?.close || 'Close'}
+                                    </button>
+                                </div>
                             </div>
 
                             <div className="space-y-6">
