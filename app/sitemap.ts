@@ -3,6 +3,7 @@ import { supabaseServer } from '@/lib/supabase'
 import { formatCategoryForUrl, generateBikeUrl, generateUrlSlug } from '@/lib/utils'
 import { SITE_URL, STATIC_SITE_LANGUAGES } from '@/lib/site'
 
+export const dynamic = 'force-dynamic'
 export const revalidate = 86400 // Revalidate every 24 hours
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

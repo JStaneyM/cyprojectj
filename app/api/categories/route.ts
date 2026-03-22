@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { supabaseServer, fetchAllBikes } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     // Fetch ALL bikes using batch pagination (bypasses 1000 row limit)

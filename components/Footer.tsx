@@ -4,18 +4,11 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { generateUrlSlug } from '@/lib/utils'
 
-interface Category {
-  name: string
-  slug: string
-  count: number
-}
-
 interface FooterProps {
-  categories: Category[]
   lang: string
 }
 
-export default function Footer({ categories, lang }: FooterProps) {
+export default function Footer({ lang }: FooterProps) {
   const currentYear = new Date().getFullYear()
   const footerCategories = [
     { name: 'Road Bikes', slug: 'roadbikes' },
