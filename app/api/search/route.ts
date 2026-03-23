@@ -3,7 +3,7 @@ import { supabaseServer } from '@/lib/supabase'
 
 interface SearchCandidate {
   id: number
-  title: string | null
+  search_title: string | null
   brand: string
   model: string
   year: number | null
@@ -37,13 +37,13 @@ const getSearchTerms = (query: string) =>
 
 const getMinimumMatches = (terms: string[]) => (terms.length > 3 ? 3 : terms.length)
 
-const getMatchCount = (title: string, terms: string[]) =>
-  terms.reduce((count, term) => count + (title.includes(term) ? 1 : 0), 0)
+const getMatchCount = (searchTitle: string, terms: string[]) =>
+  terms.reduce((count, term) => count + (searchTitle.includes(term) ? 1 : 0), 0)
 
 const sortCandidates = (a: SearchCandidate, b: SearchCandidate, terms: string[]) => {
-  const titleA = (a.title || '').toLowerCase()
-  const titleB = (b.title || '').toLowerCase()
-  const matchDiff = getMatchCount(titleB, terms) - getMatchCount(titleA, terms)
+  const searchTitleA = (a.search_title || '').toLowerCase()
+  const searchTitleB = (b.search_title || '').toLowerCase()
+  const matchDiff = getMatchCount(searchTitleB, terms) - getMatchCount(searchTitleA, terms)
 
   if (matchDiff !== 0) return matchDiff
   return (b.year || 0) - (a.year || 0)
@@ -76,11 +76,12 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.replace(/[^a-z0-9]/gi, '').length - a.replace(/[^a-z0-9]/gi, '').length)[0]
     const seedPattern = `%${seedTerm}%`
     const normalizedSlugQuery = normalizedQuery.replace(/\s+/g, '-')
-    const candidateSelectFields = 'id, brand, model, title, year'
+    const candidateSelectFields = 'id, brand, model, search_title, year'
     const finalSelectFields = [
       'id',
       'brand',
       'model',
+      'search_title',
       'title',
       'year',
       'price',
@@ -106,7 +107,7 @@ export async function GET(request: NextRequest) {
     const prefixTitleResult = await supabaseServer
       .from('bikes')
       .select(candidateSelectFields)
-      .ilike('title', prefixPattern)
+      .ilike('search_title', prefixPattern)
       .limit(80)
 
     candidates = prefixTitleResult.data
@@ -116,7 +117,7 @@ export async function GET(request: NextRequest) {
       const wordTitleResult = await supabaseServer
         .from('bikes')
         .select(candidateSelectFields)
-        .ilike('title', wordPattern)
+        .ilike('search_title', wordPattern)
         .limit(80)
 
       candidates = [
@@ -130,7 +131,7 @@ export async function GET(request: NextRequest) {
       const orderedTitleResult = await supabaseServer
         .from('bikes')
         .select(candidateSelectFields)
-        .ilike('title', orderedPattern)
+        .ilike('search_title', orderedPattern)
         .limit(80)
 
       candidates = [
@@ -144,7 +145,7 @@ export async function GET(request: NextRequest) {
       const seedTitleResult = await supabaseServer
         .from('bikes')
         .select(candidateSelectFields)
-        .ilike('title', seedPattern)
+        .ilike('search_title', seedPattern)
         .limit(100)
 
       candidates = [
@@ -202,7 +203,7 @@ export async function GET(request: NextRequest) {
         }
 
         const filteredFallbackBikes = (fallbackBikes || [])
-          .filter((bike) => getMatchCount((bike.title || '').toLowerCase(), terms) >= minimumMatches)
+          .filter((bike) => getMatchCount((bike.search_title || '').toLowerCase(), terms) >= minimumMatches)
           .sort((a, b) => sortCandidates(a, b, terms))
           .slice(0, limit)
           .map((bike) => ({
@@ -219,7 +220,7 @@ export async function GET(request: NextRequest) {
 
     const matchedCandidates = (candidates || [])
       .filter((bike) => {
-        const searchableText = (bike.title || '').toLowerCase()
+        const searchableText = (bike.search_title || '').toLowerCase()
         const matchCount = getMatchCount(searchableText, terms)
         return matchCount >= minimumMatches
       })
