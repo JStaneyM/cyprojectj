@@ -106,29 +106,32 @@
     },
     "buckets": {
         "speed": {
-            "relaxed_pace": "Entspanntes Tempo",
-            "moderate_speed": "Mäßige Geschwindigkeit",
-            "fast": "Schnell",
-            "very_fast": "Sehr Schnell",
-            "extremely_fast": "Extrem Schnell"
+            "very_low": "Sehr niedrig",
+            "low": "Niedrig",
+            "medium": "Mittel",
+            "high": "Hoch",
+            "very_high": "Sehr hoch"
         },
         "climbing": {
-            "city_climber": "Stadtkletterer",
-            "moderate_climber": "Mäßiger Kletterer",
-            "good_climber": "Guter Kletterer",
-            "excellent_climber": "Exzellenter Kletterer"
+            "flatlander": "Flachland-Spezialist",
+            "hefty_but_manageable": "Schwer, aber beherrschbar",
+            "all_rounder": "Allrounder",
+            "climber": "Kletterer",
+            "mountain_goat": "Bergziege"
         },
         "aero": {
-            "non_aero": "Nicht Aero",
-            "moderate_aero": "Mäßig Aero",
-            "aero": "Aero",
-            "very_aero": "Sehr Aero"
+            "minimal_aero": "Minimale Aero",
+            "non_aero": "Nicht-Aero",
+            "balanced_aero": "Ausgewogene Aero",
+            "aero_enhanced": "Aero-optimiert",
+            "full_aero": "Voll-Aero"
         },
         "posture": {
-            "relaxed": "Entspannt",
+            "comfort": "Komfort",
+            "relaxed_upright": "Entspannt / Aufrecht",
             "balanced": "Ausgewogen",
             "sporty": "Sportlich",
-            "aggressive": "Aggressiv"
+            "race_pro": "Rennen / Pro"
         },
         "handling": {
             "stable": "Stabil",
@@ -137,16 +140,18 @@
             "highly_responsive": "Sehr Reaktionsfreudig"
         },
         "fit_flexibility": {
-            "race_specific_fit": "Rennspezifische Passform",
-            "versatile": "Vielseitig",
-            "highly_adaptable": "Sehr Anpassungsfähig",
-            "optimal_fit": "Optimale Passform"
+            "limited_adjustment": "Begrenzte Anpassung",
+            "adjustable": "Anpassbar",
+            "moderately_adjustable": "Mäßig anpassbar",
+            "highly_adjustable": "Stark anpassbar",
+            "race_fit_specific": "Rennspezifische Passform"
         },
         "ride_comfort": {
-            "race_aggressive": "Renn-Aggressiv",
-            "everyday_comfort": "Alltagskomfort",
-            "high_comfort": "Hoher Komfort",
-            "endurance_focused": "Ausdauerorientiert"
+            "race_stiff": "Rennhart",
+            "firm": "Straff",
+            "balanced": "Ausgewogen",
+            "comfortable": "Komfortabel",
+            "ultra_smooth": "Ultra sanft"
         },
         "build_quality": {
             "basic_build": "Basis Bauweise",
@@ -155,22 +160,31 @@
             "premium_build": "Premium Bauweise"
         },
         "value": {
-            "premium_pricing": "Premium Preisgestaltung",
-            "good_value": "Guter Wert",
-            "strong_value": "Starker Wert",
-            "extreme_value": "Extremer Wert"
+            "low_value": "Geringer Wert",
+            "overpriced": "Überteuert",
+            "fair_value": "Fairer Wert",
+            "great_value": "Guter Wert",
+            "exceptional_value": "Herausragender Wert"
         },
         "battery": {
-            "limited_range": "Begrenzte Reichweite",
-            "moderate_range": "Mäßige Reichweite",
-            "good_range": "Gute Reichweite",
-            "excellent_range": "Exzellente Reichweite"
+            "quick_trips": "Kurzstrecken",
+            "regular_rides": "Regelmäßige Fahrten",
+            "commutes": "Pendelstrecken",
+            "long_rides": "Lange Fahrten",
+            "all_day_rides": "Ganztägige Fahrten"
+        },
+        "surface_range": {
+            "all_road_capable": "Allroad-tauglich",
+            "paved_road_focused": "Straßenorientiert",
+            "mixed_surface": "Gemischter Untergrund",
+            "off_road_ready": "Geländetauglich"
         },
         "suspension": {
-            "rigid": "Starr",
-            "firm": "Straff",
-            "balanced": "Ausgewogen",
-            "plush": "Weich"
+            "minimal_suspension": "Minimale Federung",
+            "basic_bump_control": "Grundlegende Dämpfung",
+            "confident_trail_control": "Souveräne Trail-Kontrolle",
+            "high_impact_ready": "Für harte Schläge bereit",
+            "extreme_rough_terrain_ready": "Für extremes Gelände bereit"
         }
     },
     "specs": {

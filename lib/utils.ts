@@ -81,10 +81,11 @@ export function calculateBikeMetrics(bike: Bike): BikeMetrics {
 
   // Get descriptive labels
   const getPerformanceLabel = (score: number): string => {
-    if (score >= 8.5) return 'buckets.climbing.excellent_climber'
-    if (score >= 7) return 'buckets.climbing.good_climber'
-    if (score >= 5.5) return 'buckets.climbing.moderate_climber'
-    return 'buckets.climbing.city_climber'
+    if (score >= 8.5) return 'buckets.climbing.mountain_goat'
+    if (score >= 7) return 'buckets.climbing.climber'
+    if (score >= 5.5) return 'buckets.climbing.all_rounder'
+    if (score >= 4) return 'buckets.climbing.hefty_but_manageable'
+    return 'buckets.climbing.flatlander'
   }
 
   const getValueLabel = (score: number): string => {

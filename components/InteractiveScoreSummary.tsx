@@ -8,9 +8,10 @@ import { useEffect, useState } from 'react'
 interface InteractiveScoreSummaryProps {
     metrics: any
     bike: any
+    containerClassName?: string
 }
 
-export default function InteractiveScoreSummary({ metrics, bike }: InteractiveScoreSummaryProps) {
+export default function InteractiveScoreSummary({ metrics, bike, containerClassName = '' }: InteractiveScoreSummaryProps) {
     const params = useParams()
     const lang = (params?.lang as string) || 'en'
     const [summaryTitle, setSummaryTitle] = useState('Score Summary')
@@ -58,8 +59,8 @@ export default function InteractiveScoreSummary({ metrics, bike }: InteractiveSc
     ].filter((card) => card.score !== null && card.score !== undefined)
 
     const desktopGridClass = {
-        1: 'lg:grid-cols-1',
-        2: 'lg:grid-cols-2',
+        1: 'lg:grid-cols-3',
+        2: 'lg:grid-cols-3',
         3: 'lg:grid-cols-3',
         4: 'lg:grid-cols-4',
     }[summaryCards.length] || 'lg:grid-cols-4'
@@ -69,7 +70,7 @@ export default function InteractiveScoreSummary({ metrics, bike }: InteractiveSc
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">{summaryTitle}</h2>
             </div>
-            <div className={`grid grid-cols-1 sm:grid-cols-2 ${desktopGridClass} gap-4`}>
+            <div className={`${containerClassName} grid grid-cols-1 sm:grid-cols-2 ${desktopGridClass} gap-4`}>
                 {summaryCards.map((card) => (
                     <ScoreCard
                         key={card.key}

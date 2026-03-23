@@ -224,17 +224,12 @@ export default async function BikePage({ params }: PageProps) {
   const suspensionMetric = metrics.suspension
   const fitMetricCount = [postureScore, handlingScore, fitFlexScore, comfortScore].filter(score => score !== null).length
   const fitGridCols = {
-    1: 'grid-cols-1 lg:grid-cols-1',
-    2: 'grid-cols-1 lg:grid-cols-2',
+    1: 'grid-cols-1 lg:grid-cols-3',
+    2: 'grid-cols-1 lg:grid-cols-3',
     3: 'grid-cols-1 lg:grid-cols-3',
     4: 'grid-cols-1 lg:grid-cols-4',
   }[fitMetricCount] || 'grid-cols-1 lg:grid-cols-4'
-  const valueMetricCount = [buildScore, valueScore, true].filter(Boolean).length
-  const valueGridCols = {
-    1: 'grid-cols-1 lg:grid-cols-1',
-    2: 'grid-cols-1 lg:grid-cols-3',
-    3: 'grid-cols-1 lg:grid-cols-3',
-  }[valueMetricCount] || 'grid-cols-1 lg:grid-cols-3'
+  const valueGridCols = 'grid-cols-1 lg:grid-cols-3'
   const metricSectionContainerClass = 'w-full max-w-6xl'
 
   const subCategoryName = localizedBike.sub_category
@@ -341,7 +336,7 @@ export default async function BikePage({ params }: PageProps) {
             <div className="flex items-center justify-center"><ImageGallery images={localizedBike.images || []} alt={`${localizedBike.brand} ${localizedBike.model}`} /></div>
           </div>
 
-          <InteractiveScoreSummary metrics={metrics} bike={localizedBike} />
+          <InteractiveScoreSummary metrics={metrics} bike={localizedBike} containerClassName={metricSectionContainerClass} />
 
           <ScoreSection>
             <ScoreSectionWithToggle title={t('scores.performance') || "Performance"} subtitle="Built for speed and efficiency" gridCols="grid-cols-1 lg:grid-cols-3" containerClassName={metricSectionContainerClass}>
@@ -353,7 +348,7 @@ export default async function BikePage({ params }: PageProps) {
                   label={metrics.climbingEfficiency.label}
                   score={climbScore}
                   maxScore={10}
-                  description={localizedBike.climb_bucket || metrics.climbingEfficiency.description}
+                  description={localizedBike.climb_bucket ? translateLookupValue(localizedBike.climb_bucket) : metrics.climbingEfficiency.description}
                   variant="inline"
                   explanation={localizedBike.climb_reason || localizedBike.climbing_efficiency_explanation}
                 />

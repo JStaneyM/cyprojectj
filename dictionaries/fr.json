@@ -106,29 +106,32 @@
     },
     "buckets": {
         "speed": {
-            "relaxed_pace": "Rythme Détendu",
-            "moderate_speed": "Vitesse Modérée",
-            "fast": "Rapide",
-            "very_fast": "Très Rapide",
-            "extremely_fast": "Extrêmement Rapide"
+            "very_low": "Très faible",
+            "low": "Faible",
+            "medium": "Moyenne",
+            "high": "Élevée",
+            "very_high": "Très élevée"
         },
         "climbing": {
-            "city_climber": "Grimpeur Urbain",
-            "moderate_climber": "Grimpeur Modéré",
-            "good_climber": "Bon Grimpeur",
-            "excellent_climber": "Excellent Grimpeur"
+            "flatlander": "Rouleur de plaine",
+            "hefty_but_manageable": "Lourd mais gérable",
+            "all_rounder": "Polyvalent",
+            "climber": "Grimpeur",
+            "mountain_goat": "Chèvre de montagne"
         },
         "aero": {
+            "minimal_aero": "Aéro minimale",
             "non_aero": "Non Aéro",
-            "moderate_aero": "Aéro Modéré",
-            "aero": "Aéro",
-            "very_aero": "Très Aéro"
+            "balanced_aero": "Aéro équilibré",
+            "aero_enhanced": "Aéro optimisé",
+            "full_aero": "Aéro intégral"
         },
         "posture": {
-            "relaxed": "Détendue",
+            "comfort": "Confort",
+            "relaxed_upright": "Détendue / Droite",
             "balanced": "Équilibrée",
             "sporty": "Sportive",
-            "aggressive": "Agressive"
+            "race_pro": "Course / Pro"
         },
         "handling": {
             "stable": "Stable",
@@ -137,16 +140,18 @@
             "highly_responsive": "Très Réactif"
         },
         "fit_flexibility": {
-            "race_specific_fit": "Ajustement Course Spécifique",
-            "versatile": "Polyvalent",
-            "highly_adaptable": "Très Adaptable",
-            "optimal_fit": "Ajustement Optimal"
+            "limited_adjustment": "Réglage limité",
+            "adjustable": "Ajustable",
+            "moderately_adjustable": "Modérément ajustable",
+            "highly_adjustable": "Très ajustable",
+            "race_fit_specific": "Coupe typée course"
         },
         "ride_comfort": {
-            "race_aggressive": "Course Agressive",
-            "everyday_comfort": "Confort Quotidien",
-            "high_comfort": "Grand Confort",
-            "endurance_focused": "Axé sur l'Endurance"
+            "race_stiff": "Raide de course",
+            "firm": "Ferme",
+            "balanced": "Équilibré",
+            "comfortable": "Confortable",
+            "ultra_smooth": "Ultra fluide"
         },
         "build_quality": {
             "basic_build": "Construction Basique",
@@ -155,22 +160,31 @@
             "premium_build": "Construction Premium"
         },
         "value": {
-            "premium_pricing": "Prix Premium",
-            "good_value": "Bonne Valeur",
-            "strong_value": "Forte Valeur",
-            "extreme_value": "Valeur Extrême"
+            "low_value": "Faible rapport qualité-prix",
+            "overpriced": "Trop cher",
+            "fair_value": "Rapport qualité-prix correct",
+            "great_value": "Bon rapport qualité-prix",
+            "exceptional_value": "Rapport qualité-prix exceptionnel"
         },
         "battery": {
-            "limited_range": "Autonomie Limitée",
-            "moderate_range": "Autonomie Modérée",
-            "good_range": "Bonne Autonomie",
-            "excellent_range": "Excellente Autonomie"
+            "quick_trips": "Petits trajets",
+            "regular_rides": "Sorties régulières",
+            "commutes": "Trajets domicile-travail",
+            "long_rides": "Longues sorties",
+            "all_day_rides": "Sorties à la journée"
+        },
+        "surface_range": {
+            "all_road_capable": "Polyvalent route",
+            "paved_road_focused": "Axé route",
+            "mixed_surface": "Surfaces mixtes",
+            "off_road_ready": "Prêt pour le tout-terrain"
         },
         "suspension": {
-            "rigid": "Rigide",
-            "firm": "Ferme",
-            "balanced": "Équilibrée",
-            "plush": "Souple"
+            "minimal_suspension": "Suspension minimale",
+            "basic_bump_control": "Amorti de base",
+            "confident_trail_control": "Contrôle trail assuré",
+            "high_impact_ready": "Prêt pour gros impacts",
+            "extreme_rough_terrain_ready": "Prêt pour terrain extrême"
         }
     },
     "specs": {

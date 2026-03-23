@@ -106,29 +106,32 @@
     },
     "buckets": {
         "speed": {
-            "relaxed_pace": "Ontspannen Tempo",
-            "moderate_speed": "Gemiddelde Snelheid",
-            "fast": "Snel",
-            "very_fast": "Zeer Snel",
-            "extremely_fast": "Extreem Snel"
+            "very_low": "Zeer laag",
+            "low": "Laag",
+            "medium": "Gemiddeld",
+            "high": "Hoog",
+            "very_high": "Zeer hoog"
         },
         "climbing": {
-            "city_climber": "Stadsklimmer",
-            "moderate_climber": "Gemiddelde Klimmer",
-            "good_climber": "Goede Klimmer",
-            "excellent_climber": "Uitstekende Klimmer"
+            "flatlander": "Vlakland-specialist",
+            "hefty_but_manageable": "Zwaar maar beheersbaar",
+            "all_rounder": "Alleskunner",
+            "climber": "Klimmer",
+            "mountain_goat": "Berggeit"
         },
         "aero": {
-            "non_aero": "Niet-Aero",
-            "moderate_aero": "Enigszins Aero",
-            "aero": "Aero",
-            "very_aero": "Zeer Aero"
+            "minimal_aero": "Minimale aero",
+            "non_aero": "Niet-aero",
+            "balanced_aero": "Gebalanceerde aero",
+            "aero_enhanced": "Aero-versterkt",
+            "full_aero": "Volledige aero"
         },
         "posture": {
-            "relaxed": "Ontspannen",
+            "comfort": "Comfort",
+            "relaxed_upright": "Ontspannen / Rechtop",
             "balanced": "Gebalanceerd",
             "sporty": "Sportief",
-            "aggressive": "Agressief"
+            "race_pro": "Race / Pro"
         },
         "handling": {
             "stable": "Stabiel",
@@ -137,16 +140,18 @@
             "highly_responsive": "Zeer Responsief"
         },
         "fit_flexibility": {
-            "race_specific_fit": "Race Specifieke Pasvorm",
-            "versatile": "Veelzijdig",
-            "highly_adaptable": "Zeer Aanpasbaar",
-            "optimal_fit": "Optimale Pasvorm"
+            "limited_adjustment": "Beperkte afstelling",
+            "adjustable": "Verstelbaar",
+            "moderately_adjustable": "Gemiddeld verstelbaar",
+            "highly_adjustable": "Zeer verstelbaar",
+            "race_fit_specific": "Race-specifieke pasvorm"
         },
         "ride_comfort": {
-            "race_aggressive": "Race Agressief",
-            "everyday_comfort": "Dagelijks Comfort",
-            "high_comfort": "Hoog Comfort",
-            "endurance_focused": "Duurgericht"
+            "race_stiff": "Race-stijf",
+            "firm": "Stevig",
+            "balanced": "Gebalanceerd",
+            "comfortable": "Comfortabel",
+            "ultra_smooth": "Ultra soepel"
         },
         "build_quality": {
             "basic_build": "Basis Bouw",
@@ -155,22 +160,31 @@
             "premium_build": "Premium Bouw"
         },
         "value": {
-            "premium_pricing": "Premium Prijsstelling",
-            "good_value": "Goede Waarde",
-            "strong_value": "Sterke Waarde",
-            "extreme_value": "Extreme Waarde"
+            "low_value": "Lage waarde",
+            "overpriced": "Te duur",
+            "fair_value": "Redelijke waarde",
+            "great_value": "Goede waarde",
+            "exceptional_value": "Uitzonderlijke waarde"
         },
         "battery": {
-            "limited_range": "Beperkt Bereik",
-            "moderate_range": "Gemiddeld Bereik",
-            "good_range": "Goed Bereik",
-            "excellent_range": "Uitstekend Bereik"
+            "quick_trips": "Korte ritten",
+            "regular_rides": "Regelmatige ritten",
+            "commutes": "Woon-werkritten",
+            "long_rides": "Lange ritten",
+            "all_day_rides": "Hele dag ritten"
+        },
+        "surface_range": {
+            "all_road_capable": "All-road geschikt",
+            "paved_road_focused": "Gericht op asfalt",
+            "mixed_surface": "Gemengde ondergrond",
+            "off_road_ready": "Klaar voor off-road"
         },
         "suspension": {
-            "rigid": "Stijf",
-            "firm": "Stevig",
-            "balanced": "Gebalanceerd",
-            "plush": "Zacht"
+            "minimal_suspension": "Minimale vering",
+            "basic_bump_control": "Basis demping",
+            "confident_trail_control": "Zelfverzekerde trailcontrole",
+            "high_impact_ready": "Klaar voor zware impacts",
+            "extreme_rough_terrain_ready": "Klaar voor extreem terrein"
         }
     },
     "specs": {

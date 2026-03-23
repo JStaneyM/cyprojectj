@@ -106,29 +106,32 @@
     },
     "buckets": {
         "speed": {
-            "relaxed_pace": "Relaxed Pace",
-            "moderate_speed": "Moderate Speed",
-            "fast": "Fast",
-            "very_fast": "Very Fast",
-            "extremely_fast": "Extremely Fast"
+            "very_low": "Very Low",
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High",
+            "very_high": "Very High"
         },
         "climbing": {
-            "city_climber": "City Climber",
-            "moderate_climber": "Moderate Climber",
-            "good_climber": "Good Climber",
-            "excellent_climber": "Excellent Climber"
+            "flatlander": "Flatlander",
+            "hefty_but_manageable": "Hefty but Manageable",
+            "all_rounder": "All-Rounder",
+            "climber": "Climber",
+            "mountain_goat": "Mountain Goat"
         },
         "aero": {
+            "minimal_aero": "Minimal Aero",
             "non_aero": "Non-Aero",
-            "moderate_aero": "Moderate Aero",
-            "aero": "Aero",
-            "very_aero": "Very Aero"
+            "balanced_aero": "Balanced Aero",
+            "aero_enhanced": "Aero-Enhanced",
+            "full_aero": "Full Aero"
         },
         "posture": {
-            "relaxed": "Relaxed",
+            "comfort": "Comfort",
+            "relaxed_upright": "Relaxed / Upright",
             "balanced": "Balanced",
             "sporty": "Sporty",
-            "aggressive": "Aggressive"
+            "race_pro": "Race / Pro"
         },
         "handling": {
             "stable": "Stable",
@@ -137,16 +140,18 @@
             "highly_responsive": "Highly Responsive"
         },
         "fit_flexibility": {
-            "race_specific_fit": "Race Specific Fit",
-            "versatile": "Versatile",
-            "highly_adaptable": "Highly Adaptable",
-            "optimal_fit": "Optimal Fit"
+            "limited_adjustment": "Limited Adjustment",
+            "adjustable": "Adjustable",
+            "moderately_adjustable": "Moderately Adjustable",
+            "highly_adjustable": "Highly Adjustable",
+            "race_fit_specific": "Race-Fit Specific"
         },
         "ride_comfort": {
-            "race_aggressive": "Race Aggressive",
-            "everyday_comfort": "Everyday Comfort",
-            "high_comfort": "High Comfort",
-            "endurance_focused": "Endurance Focused"
+            "race_stiff": "Race-Stiff",
+            "firm": "Firm",
+            "balanced": "Balanced",
+            "comfortable": "Comfortable",
+            "ultra_smooth": "Ultra Smooth"
         },
         "build_quality": {
             "basic_build": "Basic Build",
@@ -155,16 +160,18 @@
             "premium_build": "Premium Build"
         },
         "value": {
-            "premium_pricing": "Premium Pricing",
-            "good_value": "Good Value",
-            "strong_value": "Strong Value",
-            "extreme_value": "Extreme Value"
+            "low_value": "Low Value",
+            "overpriced": "Overpriced",
+            "fair_value": "Fair Value",
+            "great_value": "Great Value",
+            "exceptional_value": "Exceptional Value"
         },
         "battery": {
-            "limited_range": "Limited Range",
-            "moderate_range": "Moderate Range",
-            "good_range": "Good Range",
-            "excellent_range": "Excellent Range"
+            "quick_trips": "Quick trips",
+            "regular_rides": "Regular rides",
+            "commutes": "Commutes",
+            "long_rides": "Long rides",
+            "all_day_rides": "All-day rides"
         },
         "surface_range": {
             "all_road_capable": "All-Road Capable",
@@ -173,10 +180,11 @@
             "off_road_ready": "Off-Road Ready"
         },
         "suspension": {
-            "rigid": "Rigid",
-            "firm": "Firm",
-            "balanced": "Balanced",
-            "plush": "Plush"
+            "minimal_suspension": "Minimal suspension",
+            "basic_bump_control": "Basic bump control",
+            "confident_trail_control": "Confident trail control",
+            "high_impact_ready": "High-impact ready",
+            "extreme_rough_terrain_ready": "Extreme rough-terrain ready"
         }
     },
     "specs": {

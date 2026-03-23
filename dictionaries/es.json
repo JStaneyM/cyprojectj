@@ -106,29 +106,32 @@
     },
     "buckets": {
         "speed": {
-            "relaxed_pace": "Ritmo Relajado",
-            "moderate_speed": "Velocidad Moderada",
-            "fast": "Rápido",
-            "very_fast": "Muy Rápido",
-            "extremely_fast": "Extremadamente Rápido"
+            "very_low": "Muy baja",
+            "low": "Baja",
+            "medium": "Media",
+            "high": "Alta",
+            "very_high": "Muy alta"
         },
         "climbing": {
-            "city_climber": "Escalador Urbano",
-            "moderate_climber": "Escalador Moderado",
-            "good_climber": "Buen Escalador",
-            "excellent_climber": "Escalador Excelente"
+            "flatlander": "Rodadora de llano",
+            "hefty_but_manageable": "Pesada pero manejable",
+            "all_rounder": "Polivalente",
+            "climber": "Escaladora",
+            "mountain_goat": "Cabra montesa"
         },
         "aero": {
-            "non_aero": "No Aero",
-            "moderate_aero": "Aero Moderado",
-            "aero": "Aero",
-            "very_aero": "Muy Aero"
+            "minimal_aero": "Aero mínima",
+            "non_aero": "No aero",
+            "balanced_aero": "Aero equilibrada",
+            "aero_enhanced": "Aero mejorada",
+            "full_aero": "Aero total"
         },
         "posture": {
-            "relaxed": "Relajada",
+            "comfort": "Confort",
+            "relaxed_upright": "Relajada / Erguida",
             "balanced": "Equilibrada",
             "sporty": "Deportiva",
-            "aggressive": "Agresiva"
+            "race_pro": "Carrera / Pro"
         },
         "handling": {
             "stable": "Estable",
@@ -137,16 +140,18 @@
             "highly_responsive": "Altamente Reactivo"
         },
         "fit_flexibility": {
-            "race_specific_fit": "Ajuste Específico de Carrera",
-            "versatile": "Versátil",
-            "highly_adaptable": "Altamente Adaptable",
-            "optimal_fit": "Ajuste Óptimo"
+            "limited_adjustment": "Ajuste limitado",
+            "adjustable": "Ajustable",
+            "moderately_adjustable": "Moderadamente ajustable",
+            "highly_adjustable": "Muy ajustable",
+            "race_fit_specific": "Ajuste específico de carrera"
         },
         "ride_comfort": {
-            "race_aggressive": "Carrera Agresiva",
-            "everyday_comfort": "Confort Diario",
-            "high_comfort": "Alto Confort",
-            "endurance_focused": "Enfocado en Resistencia"
+            "race_stiff": "Rígida de carrera",
+            "firm": "Firme",
+            "balanced": "Equilibrado",
+            "comfortable": "Cómoda",
+            "ultra_smooth": "Ultra suave"
         },
         "build_quality": {
             "basic_build": "Construcción Básica",
@@ -155,22 +160,31 @@
             "premium_build": "Construcción Premium"
         },
         "value": {
-            "premium_pricing": "Precio Premium",
-            "good_value": "Buen Valor",
-            "strong_value": "Gran Valor",
-            "extreme_value": "Valor Extremo"
+            "low_value": "Poco valor",
+            "overpriced": "Sobrevalorada",
+            "fair_value": "Valor razonable",
+            "great_value": "Gran valor",
+            "exceptional_value": "Valor excepcional"
         },
         "battery": {
-            "limited_range": "Rango Limitado",
-            "moderate_range": "Rango Moderado",
-            "good_range": "Buen Rango",
-            "excellent_range": "Rango Excelente"
+            "quick_trips": "Trayectos cortos",
+            "regular_rides": "Salidas regulares",
+            "commutes": "Desplazamientos diarios",
+            "long_rides": "Rutas largas",
+            "all_day_rides": "Todo el día"
+        },
+        "surface_range": {
+            "all_road_capable": "Todo camino",
+            "paved_road_focused": "Enfoque asfalto",
+            "mixed_surface": "Superficies mixtas",
+            "off_road_ready": "Lista para off-road"
         },
         "suspension": {
-            "rigid": "Rígida",
-            "firm": "Firme",
-            "balanced": "Equilibrada",
-            "plush": "Suave"
+            "minimal_suspension": "Suspensión mínima",
+            "basic_bump_control": "Control básico de baches",
+            "confident_trail_control": "Control seguro en senderos",
+            "high_impact_ready": "Lista para grandes impactos",
+            "extreme_rough_terrain_ready": "Lista para terreno extremo"
         }
     },
     "specs": {
