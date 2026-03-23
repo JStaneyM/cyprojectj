@@ -174,10 +174,16 @@
             "all_day_rides": "Hele dag ritten"
         },
         "surface_range": {
-            "all_road_capable": "All-road geschikt",
-            "paved_road_focused": "Gericht op asfalt",
-            "mixed_surface": "Gemengde ondergrond",
-            "off_road_ready": "Klaar voor off-road"
+            "road_only": "Alleen weg",
+            "rough_road": "Ruwe weg",
+            "all_road": "All Road",
+            "gravel_ready": "Gravel-ready",
+            "natural_trails": "Natuurlijke trails",
+            "adventure": "Avontuur",
+            "flow_trails": "Flow trails",
+            "tech_trails": "Technische trails",
+            "bike_park": "Bike Park",
+            "soft_terrain": "Zachte ondergrond"
         },
         "suspension": {
             "minimal_suspension": "Minimale vering",

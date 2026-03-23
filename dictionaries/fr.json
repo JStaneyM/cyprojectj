@@ -174,10 +174,16 @@
             "all_day_rides": "Sorties à la journée"
         },
         "surface_range": {
-            "all_road_capable": "Polyvalent route",
-            "paved_road_focused": "Axé route",
-            "mixed_surface": "Surfaces mixtes",
-            "off_road_ready": "Prêt pour le tout-terrain"
+            "road_only": "Route uniquement",
+            "rough_road": "Route dégradée",
+            "all_road": "All Road",
+            "gravel_ready": "Prêt pour le gravel",
+            "natural_trails": "Trails naturels",
+            "adventure": "Aventure",
+            "flow_trails": "Trails fluides",
+            "tech_trails": "Trails techniques",
+            "bike_park": "Bike Park",
+            "soft_terrain": "Terrain meuble"
         },
         "suspension": {
             "minimal_suspension": "Suspension minimale",

@@ -174,10 +174,16 @@
             "all_day_rides": "Todo el día"
         },
         "surface_range": {
-            "all_road_capable": "Todo camino",
-            "paved_road_focused": "Enfoque asfalto",
-            "mixed_surface": "Superficies mixtas",
-            "off_road_ready": "Lista para off-road"
+            "road_only": "Solo carretera",
+            "rough_road": "Carretera rota",
+            "all_road": "All Road",
+            "gravel_ready": "Lista para gravel",
+            "natural_trails": "Senderos naturales",
+            "adventure": "Aventura",
+            "flow_trails": "Senderos fluidos",
+            "tech_trails": "Senderos técnicos",
+            "bike_park": "Bike Park",
+            "soft_terrain": "Terreno blando"
         },
         "suspension": {
             "minimal_suspension": "Suspensión mínima",

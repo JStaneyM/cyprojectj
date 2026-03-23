@@ -174,10 +174,16 @@
             "all_day_rides": "All-day rides"
         },
         "surface_range": {
-            "all_road_capable": "All-Road Capable",
-            "paved_road_focused": "Paved Road Focused",
-            "mixed_surface": "Mixed Surface",
-            "off_road_ready": "Off-Road Ready"
+            "road_only": "Road Only",
+            "rough_road": "Rough Road",
+            "all_road": "All Road",
+            "gravel_ready": "Gravel Ready",
+            "natural_trails": "Natural Trails",
+            "adventure": "Adventure",
+            "flow_trails": "Flow Trails",
+            "tech_trails": "Tech Trails",
+            "bike_park": "Bike Park",
+            "soft_terrain": "Soft Terrain"
         },
         "suspension": {
             "minimal_suspension": "Minimal suspension",

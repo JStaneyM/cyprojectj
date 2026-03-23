@@ -152,13 +152,6 @@ export function calculateBikeMetrics(bike: Bike): BikeMetrics {
     return 'buckets.suspension.rigid'
   }
 
-  const getBatteryLabel = (score: number): string => {
-    if (score >= 8) return 'buckets.battery.excellent_range'
-    if (score >= 6) return 'buckets.battery.good_range'
-    if (score >= 4) return 'buckets.battery.moderate_range'
-    return 'buckets.battery.limited_range'
-  }
-
   // Battery should only show for E-bikeRoad and E-bikeMountain categories
   const categoryLower = bike.category?.toLowerCase() || ''
   const isEBikeWithBattery = categoryLower.includes('ebike') ||
@@ -258,13 +251,13 @@ export function calculateBikeMetrics(bike: Bike): BikeMetrics {
       label: 'scores.surface_range',
       score: 8.4, // Default, can be calculated based on surface_range field
       maxScore: 10,
-      description: bike.surface_range || 'buckets.surface_range.all_road_capable', // Fallback key
+      description: bike.surface_range || '',
     },
     battery: isEBikeWithBattery ? {
       label: 'scores.battery',
       score: 7, // Placeholder score, UI will use custom text
       maxScore: 10,
-      description: bike.battery_bucket || getBatteryLabel(7),
+      description: bike.battery_bucket || '',
     } : undefined,
     suspension: {
       label: 'scores.suspension',

@@ -174,10 +174,16 @@
             "all_day_rides": "Tutto il giorno"
         },
         "surface_range": {
-            "all_road_capable": "Adatta a ogni fondo",
-            "paved_road_focused": "Orientata all'asfalto",
-            "mixed_surface": "Superfici miste",
-            "off_road_ready": "Pronta per l'off-road"
+            "road_only": "Solo strada",
+            "rough_road": "Strada sconnessa",
+            "all_road": "All Road",
+            "gravel_ready": "Pronta per gravel",
+            "natural_trails": "Trail naturali",
+            "adventure": "Avventura",
+            "flow_trails": "Trail scorrevoli",
+            "tech_trails": "Trail tecnici",
+            "bike_park": "Bike Park",
+            "soft_terrain": "Terreno morbido"
         },
         "suspension": {
             "minimal_suspension": "Sospensione minima",
