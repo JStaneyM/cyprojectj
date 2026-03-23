@@ -395,7 +395,15 @@ export default async function BikePage({ params }: PageProps) {
             <div className={`mt-8 ${metricSectionContainerClass}`}>
               <h3 className="text-xl font-bold text-gray-900 mb-5">{metrics.battery.label}</h3>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <ScoreCard label={metrics.battery.label} score={metrics.battery.score ?? 0} maxScore={10} description={metrics.battery.description} variant="inline" explanation={localizedBike.battery_reason} customValue={localizedBike.battery_range || undefined} />
+                <ScoreCard
+                  label={metrics.battery.label}
+                  score={metrics.battery.score ?? 0}
+                  maxScore={10}
+                  description={metrics.battery.description}
+                  variant="inline"
+                  explanation={localizedBike[`battery_reason_${params.lang}`] || localizedBike.battery_reason}
+                  customValue={localizedBike.battery_range || undefined}
+                />
               </div>
             </div>
           )}

@@ -152,16 +152,20 @@ export function calculateBikeMetrics(bike: Bike): BikeMetrics {
     return 'buckets.suspension.rigid'
   }
 
-  // Battery should only show for E-bikeRoad and E-bikeMountain categories
-  const categoryLower = bike.category?.toLowerCase() || ''
-  const isEBikeWithBattery = categoryLower.includes('ebike') ||
-    categoryLower.includes('electric') ||
-    categoryLower.includes('e-bike') ||
-    categoryLower.includes('e-road') ||
-    categoryLower.includes('e-mountain') ||
-    categoryLower.includes('e-gravel') ||
-    (bike.motor && bike.motor.length > 0) ||
-    (bike.battery && bike.battery.length > 0)
+  // Only show the battery metric when the bike actually has battery metric content to render.
+  const batteryReasonFields = [
+    bike.battery_range,
+    bike.battery_bucket,
+    (bike as any).battery_reason,
+    (bike as any).battery_reason_de,
+    (bike as any).battery_reason_fr,
+    (bike as any).battery_reason_es,
+    (bike as any).battery_reason_it,
+    (bike as any).battery_reason_nl,
+  ]
+  const hasBatteryMetricContent = batteryReasonFields.some(
+    (value) => typeof value === 'string' && value.trim() !== ''
+  )
 
   // Suspension logic
   const suspensionScore = normalizeScore(bike.suspension_1_10) ?? 0
@@ -253,7 +257,7 @@ export function calculateBikeMetrics(bike: Bike): BikeMetrics {
       maxScore: 10,
       description: bike.surface_range || '',
     },
-    battery: isEBikeWithBattery ? {
+    battery: hasBatteryMetricContent ? {
       label: 'scores.battery',
       score: 7, // Placeholder score, UI will use custom text
       maxScore: 10,
