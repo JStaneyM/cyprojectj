@@ -13,6 +13,15 @@ const defaultLocale = 'en'
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
+  // Allow sitemap and robots routes to bypass locale redirects.
+  if (
+    pathname === '/sitemap.xml' ||
+    pathname === '/robots.txt' ||
+    pathname.startsWith('/sitemaps/')
+  ) {
+    return NextResponse.next()
+  }
+
   // Check if pathname is missing locale
   const pathnameIsMissingLocale = locales.every(
     (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
