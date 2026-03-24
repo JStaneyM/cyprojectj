@@ -15,7 +15,7 @@ type BikeRow = {
 export async function GET(_: Request, context: { params: { lang: string } }) {
   const lang = SUPPORTED_LANGUAGES.includes(context.params.lang) ? context.params.lang : 'en'
 
-  const batchSize = 5000
+  const batchSize = 1000
   const bikes: BikeRow[] = []
   let from = 0
 
