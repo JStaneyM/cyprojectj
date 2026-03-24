@@ -152,7 +152,7 @@ export function calculateBikeMetrics(bike: Bike): BikeMetrics {
     return 'buckets.suspension.rigid'
   }
 
-  // Only show the battery metric when the bike actually has battery metric content to render.
+  // Keep battery hidden unless the bike has real battery metric content to render.
   const batteryReasonFields = [
     bike.battery_range,
     bike.battery_bucket,
