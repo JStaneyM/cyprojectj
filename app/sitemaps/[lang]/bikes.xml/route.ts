@@ -15,12 +15,35 @@ type BikeRow = {
 export async function GET(_: Request, context: { params: { lang: string } }) {
   const lang = SUPPORTED_LANGUAGES.includes(context.params.lang) ? context.params.lang : 'en'
 
-  const { data: bikes } = await supabaseServer
-    .from('bikes')
-    .select('slug, category, sub_category, brand, updated_at')
-    .order('updated_at', { ascending: false })
+  const batchSize = 5000
+  const bikes: BikeRow[] = []
+  let from = 0
 
-  const urls = ((bikes as BikeRow[] | null) || []).map((bike) => ({
+  while (true) {
+    const { data, error } = await supabaseServer
+      .from('bikes')
+      .select('slug, category, sub_category, brand, updated_at')
+      .order('updated_at', { ascending: false })
+      .range(from, from + batchSize - 1)
+
+    if (error) {
+      throw error
+    }
+
+    if (!data?.length) {
+      break
+    }
+
+    bikes.push(...(data as BikeRow[]))
+
+    if (data.length < batchSize) {
+      break
+    }
+
+    from += batchSize
+  }
+
+  const urls = bikes.map((bike) => ({
     loc: toAbsoluteUrl(generateBikeUrl(bike, lang)),
     lastmod: bike.updated_at ? new Date(bike.updated_at).toISOString() : undefined,
   }))
