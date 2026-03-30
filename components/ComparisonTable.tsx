@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import englishDict from '@/dictionaries/en.json'
 import { useComparison } from '@/context/ComparisonContext'
 import { supabase } from '@/lib/supabase'
 import { calculateBikeMetrics, formatPrice, generateBikeUrl } from '@/lib/utils'
@@ -117,8 +118,48 @@ export default function ComparisonTable({ dict, lang = 'en' }: ComparisonTablePr
         return key.split('.').reduce((o: any, i) => (o ? o[i] : null), dict) || key
     }
 
+    const findDictionaryPathByValue = (node: any, target: string, currentPath = ''): string | null => {
+        if (!node || typeof node !== 'object') return null
+
+        for (const [key, value] of Object.entries(node)) {
+            const nextPath = currentPath ? `${currentPath}.${key}` : key
+
+            if (typeof value === 'string' && value === target) return nextPath
+            if (value && typeof value === 'object') {
+                const nestedMatch = findDictionaryPathByValue(value, target, nextPath)
+                if (nestedMatch) return nestedMatch
+            }
+        }
+
+        return null
+    }
+
+    const translateLookupValue = (value?: string | null) => {
+        if (!value) return ''
+        if (value.includes('.')) return t(value)
+
+        const bucketPath = findDictionaryPathByValue((englishDict as any).buckets, value, 'buckets')
+        if (bucketPath) return t(bucketPath)
+
+        return value
+    }
+
     // Helper to render score row
-    const ScoreRow = ({ label, metricKey, isBold = false, hideDescription = false, customValueFn }: { label: string, metricKey: keyof BikeMetrics, isBold?: boolean, hideDescription?: boolean, customValueFn?: (bike: BikeWithMetrics) => string | undefined }) => (
+    const ScoreRow = ({
+        label,
+        metricKey,
+        isBold = false,
+        hideDescription = false,
+        customValueFn,
+        translateCustomValue = false
+    }: {
+        label: string,
+        metricKey: keyof BikeMetrics,
+        isBold?: boolean,
+        hideDescription?: boolean,
+        customValueFn?: (bike: BikeWithMetrics) => string | undefined,
+        translateCustomValue?: boolean
+    }) => (
         <tr className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
             <td className={`py-4 px-4 text-sm text-gray-600 ${isBold ? 'font-bold' : ''}`}>{label}</td>
             {bikes.map(bike => {
@@ -131,7 +172,7 @@ export default function ComparisonTable({ dict, lang = 'en' }: ComparisonTablePr
                 const customVal = customValueFn ? customValueFn(bike) : undefined
 
                 const descKey = typeof metric === 'object' && metric?.description ? metric.description : ''
-                const desc = hideDescription ? null : t(descKey) // Don't show description if hidden (for Performance/Value/Fit main scores)
+                const desc = hideDescription ? null : translateLookupValue(descKey)
 
                 if (!metric && metricKey === 'battery') return <td key={bike.id} className="py-4 px-4 text-center">-</td>
                 if (!metric && metricKey === 'suspension') return <td key={bike.id} className="py-4 px-4 text-center">-</td>
@@ -140,7 +181,9 @@ export default function ComparisonTable({ dict, lang = 'en' }: ComparisonTablePr
 
                 // Calculate display values and styles
                 const isScoreNumber = typeof score === 'number'
-                const displayValue = customVal || (isScoreNumber ? score.toFixed(1) : '-')
+                const displayValue = customVal
+                    ? (translateCustomValue ? translateLookupValue(customVal) : customVal)
+                    : (isScoreNumber ? score.toFixed(1) : '-')
 
                 let colorClass = 'text-red-600'
                 if (customVal) {
@@ -257,9 +300,9 @@ export default function ComparisonTable({ dict, lang = 'en' }: ComparisonTablePr
                                 </td>
                             ))}
                         </tr>
-                        <ScoreRow label="Performance" metricKey="performance" hideDescription={true} />
-                        <ScoreRow label="Value" metricKey="value" hideDescription={true} />
-                        <ScoreRow label="Fit" metricKey="fit" hideDescription={true} />
+                        <ScoreRow label={dict?.scores?.performance || 'Performance'} metricKey="performance" hideDescription={true} />
+                        <ScoreRow label={dict?.scores?.value || 'Value'} metricKey="value" hideDescription={true} />
+                        <ScoreRow label={dict?.scores?.fit || 'Fit'} metricKey="fit" hideDescription={true} />
 
                         {/* Breakdown */}
                         <tr className="bg-gray-50">
@@ -267,7 +310,7 @@ export default function ComparisonTable({ dict, lang = 'en' }: ComparisonTablePr
                                 Performance Details
                             </td>
                         </tr>
-                        <ScoreRow label="Speed" metricKey="speed" />
+                        <ScoreRow label={dict?.scores?.speed || 'Speed'} metricKey="speed" />
                         <ScoreRow label={dict?.scores?.climbing || 'Climbing Efficiency'} metricKey="climbingEfficiency" />
                         {shouldShowRow(bikes, 'aero') && <ScoreRow label={dict?.scores?.aerodynamics || 'Aerodynamics'} metricKey="aerodynamics" />}
                         {shouldShowRow(bikes, 'suspension') && <ScoreRow label={dict?.scores?.suspension || 'Suspension'} metricKey="suspension" />}
@@ -279,7 +322,7 @@ export default function ComparisonTable({ dict, lang = 'en' }: ComparisonTablePr
                         </tr>
                         <ScoreRow label={dict?.scores?.build_quality || 'Build Quality'} metricKey="buildQuality" />
                         <ScoreRow label={dict?.scores?.value_for_money || 'Value for Money'} metricKey="valueForMoney" />
-                        <ScoreRow label={dict?.scores?.surface_range || 'Surface Range'} metricKey="surfaceRange" hideDescription={true} customValueFn={(bike) => bike.surface_range || undefined} />
+                        <ScoreRow label={dict?.scores?.surface_range || 'Surface Range'} metricKey="surfaceRange" hideDescription={true} customValueFn={(bike) => bike.surface_range || undefined} translateCustomValue={true} />
                         {shouldShowRow(bikes, 'battery') && <ScoreRow label={dict?.scores?.battery || 'Battery'} metricKey="battery" customValueFn={(bike) => bike.battery_range || undefined} />}
 
                         <tr className="bg-gray-50">
@@ -300,9 +343,9 @@ export default function ComparisonTable({ dict, lang = 'en' }: ComparisonTablePr
                         </tr>
                         <SpecRow label={dict?.filters?.year || "Year"} field="year" />
                         <SpecRow label={dict?.filters?.frame_material || "Frame Material"} field="frame" />
-                        <SpecRow label="Groupset" field="groupset" />
-                        <SpecRow label="Weight" field="weight" />
-                        <SpecRow label="Wheels" field="wheels" />
+                        <SpecRow label={dict?.specs?.groupset || 'Groupset'} field="groupset" />
+                        <SpecRow label={dict?.specs?.weight || 'Weight'} field="weight" />
+                        <SpecRow label={dict?.specs?.wheels || 'Wheels'} field="wheels" />
 
                         {/* Drivetrain Section */}
                         <tr className="bg-gray-50">
@@ -310,9 +353,9 @@ export default function ComparisonTable({ dict, lang = 'en' }: ComparisonTablePr
                                 Drivetrain
                             </td>
                         </tr>
-                        <SpecRow label="Crank" field="crank" />
-                        <SpecRow label="Cassette" field="cassette" />
-                        <SpecRow label="Rear Derailleur" field="rear_derailleur" />
+                        <SpecRow label={dict?.specs?.crank || 'Crank'} field="crank" />
+                        <SpecRow label={dict?.specs?.cassette || 'Cassette'} field="cassette" />
+                        <SpecRow label={dict?.specs?.rear_derailleur || 'Rear Derailleur'} field="rear_derailleur" />
 
                         {/* Components Section */}
                         <tr className="bg-gray-50">
@@ -320,10 +363,10 @@ export default function ComparisonTable({ dict, lang = 'en' }: ComparisonTablePr
                                 Components
                             </td>
                         </tr>
-                        <SpecRow label="Brakes" field="brakes" />
-                        <SpecRow label="Handlebar" field="handlebar" />
-                        <SpecRow label="Saddle" field="saddle" />
-                        <SpecRow label="Tires" field="tires" />
+                        <SpecRow label={dict?.specs?.brakes || 'Brakes'} field="brakes" />
+                        <SpecRow label={dict?.specs?.handlebar || 'Handlebar'} field="handlebar" />
+                        <SpecRow label={dict?.specs?.saddle || 'Saddle'} field="saddle" />
+                        <SpecRow label={dict?.specs?.tires || 'Tires'} field="tires" />
 
                     </tbody>
                 </table>

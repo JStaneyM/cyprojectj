@@ -244,6 +244,29 @@ export default async function BikePage({ params }: PageProps) {
 
   const baseUrl = SITE_URL
   const bikeUrl = `${baseUrl}/${params.lang}/${params.category}/${params.subcategory}/${params.brand}/${params.slug}`
+  const bikeName = `${localizedBike.brand} ${localizedBike.model} ${localizedBike.year || ''}`.trim()
+  const REVIEW_WORD: Record<string, string> = {
+    en: 'review',
+    de: 'Test',
+    fr: 'avis',
+    it: 'recensione',
+    es: 'opinión',
+    nl: 'review',
+  }
+  const reviewSchema = localizedBike.overall_score !== null && localizedBike.overall_score !== undefined && localizedBike.overall_score !== ''
+    ? {
+        '@type': 'Review',
+        name: `${bikeName} ${REVIEW_WORD[params.lang] ?? REVIEW_WORD.en}`,
+        author: { '@type': 'Organization', name: 'MatchBikes' },
+        publisher: { '@type': 'Organization', name: 'MatchBikes' },
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: localizedBike.overall_score / 10,
+          bestRating: '10',
+          worstRating: '1',
+        },
+      }
+    : undefined
 
   // Ensure title/desc are from localizedBike for page metadata/h1
   // But metadata generation is separate. I need to fix generateMetadata too if I want it localized there.
@@ -258,7 +281,8 @@ export default async function BikePage({ params }: PageProps) {
             "@context": "https://schema.org",
             "@type": "Product",
             "@id": `${bikeUrl}#product`,
-            "name": `${localizedBike.brand} ${localizedBike.model} ${localizedBike.year || ''}`.trim(),
+            "url": bikeUrl,
+            "name": bikeName,
             "brand": {
               "@type": "Brand",
               "name": localizedBike.brand
@@ -266,6 +290,7 @@ export default async function BikePage({ params }: PageProps) {
             "category": localizedBike.sub_category || localizedBike.category,
             "image": localizedBike.images?.map((img: string) => img.startsWith('http') ? img : `${baseUrl}${img.startsWith('/') ? '' : '/'}${img}`) || [],
             "description": localizedBike.bike_desc || localizedBike.meta_desc || `Detailed review and specs for ${localizedBike.brand} ${localizedBike.model}.`,
+            "review": reviewSchema,
             "additionalProperty": [
               {
                 "@type": "PropertyValue",
